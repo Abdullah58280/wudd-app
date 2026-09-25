@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>وُد</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8B3A2F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Lateef:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF6F0; --bg2:#F3E9DC; --card:#FFFFFF; --ink:#2B2118; --mute:#7A6A58;
+  --henna:#8B3A2F; --henna-d:#6C2C24; --gold:#C9A15C; --gold-soft:#EFE0BE;
+  --line:#E7D9C5; --ok:#4B7A5A; --err:#B14A3D;
+  --shadow:0 1px 2px rgba(43,33,24,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1C1410; --bg2:#241A14; --card:#2A1F18; --ink:#F3E9DC; --mute:#B7A491;
+    --henna:#D8785F; --henna-d:#C4634C; --gold:#D9B679; --gold-soft:#3A2C1E;
+    --line:#3D2D22; --ok:#7FB08E; --err:#D9776A;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top)}
+html,body{margin:0;height:100%}
+body{
+  font-family:'IBM Plex Sans Arabic',Tahoma,sans-serif;
+  background:var(--bg); color:var(--ink);
+  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+  -webkit-font-smoothing:antialiased;
+}
+.display{font-family:'Aref Ruqaa','Lateef',serif}
+h1,h2,h3{line-height:1.35;margin:0}
+
+header{
+  position:sticky; top:0; z-index:5; padding-top:env(safe-area-inset-top);
+  background:linear-gradient(180deg,var(--bg2),var(--bg));
+  border-bottom:1px solid var(--line);
+}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand-mark{width:30px;height:30px;flex:0 0 auto}
+.brand h1{font-family:'Aref Ruqaa',serif;font-size:28px;color:var(--henna);font-weight:700}
+
+main{max-width:520px;margin:0 auto;padding:20px 18px calc(120px + env(safe-area-inset-bottom))}
+
+p{margin:0 0 10px}
+.muted{color:var(--mute);font-size:14px}
+.card{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:22px 22px 22px 6px; padding:20px; margin-bottom:14px; box-shadow:var(--shadow);
+}
+.card.plain{border-radius:16px}
+label{display:block;font-size:13.5px;color:var(--mute);margin:16px 0 6px;font-weight:500}
+label:first-of-type{margin-top:0}
+input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{
+  width:100%; padding:13px 14px; border:1.5px solid var(--line); border-radius:12px;
+  background:var(--bg); color:var(--ink); font:inherit; font-size:16px;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--henna)}
+textarea{resize:vertical;line-height:1.6}
+::placeholder{color:var(--mute);opacity:.7}
+
+.btn{
+  background:var(--henna); color:#fff; border:0; border-radius:14px;
+  padding:14px 22px; font:inherit; font-size:15.5px; font-weight:600; cursor:pointer;
+  transition:transform .12s ease, background .12s ease; width:100%;
+}
+.btn:active{transform:scale(.97); background:var(--henna-d)}
+.btn.ghost{background:transparent;color:var(--henna);border:1.5px solid var(--henna)}
+.btn.small{width:auto;padding:9px 16px;font-size:14px;border-radius:11px}
+.btn.gold{background:var(--gold);color:#3A2C10}
+.btn:disabled{opacity:.45;pointer-events:none}
+.row{display:flex;gap:10px}
+.row.wrap{flex-wrap:wrap}
+.row.between{justify-content:space-between;align-items:center}
+
+:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px}
+
+.check{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:14.5px;cursor:pointer}
+.check input{width:auto;margin-top:3px;accent-color:var(--henna)}
+
+nav{
+  position:fixed; inset:auto 0 0 0; z-index:5;
+  background:var(--card); border-top:1px solid var(--line);
+  display:flex; padding-bottom:env(safe-area-inset-bottom);
+}
+nav button{
+  flex:1; background:none; border:0; padding:12px 4px 10px; font:inherit; font-size:12.5px;
+  color:var(--mute); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+nav button svg{width:22px;height:22px;stroke:var(--mute);fill:none;stroke-width:1.7}
+nav button.on{color:var(--henna);font-weight:600}
+nav button.on svg{stroke:var(--henna)}
+
+.progress{display:flex;gap:6px;margin-bottom:22px}
+.progress i{flex:1;height:4px;border-radius:3px;background:var(--line)}
+.progress i.on{background:var(--henna)}
+.step-why{background:var(--gold-soft);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--ink);margin-top:14px;line-height:1.6}
+.pill-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pill{
+  border:1.5px solid var(--line); border-radius:999px; padding:9px 16px; font:inherit; font-size:14px;
+  background:var(--bg); color:var(--ink); cursor:pointer;
+}
+.pill.on{background:var(--henna);border-color:var(--henna);color:#fff}
+
+.hero{padding:26px 4px 10px;text-align:center}
+.hero .mark{width:64px;height:64px;margin:0 auto 14px}
+.hero h1{font-family:'Aref Ruqaa',serif;font-size:40px;color:var(--henna)}
+.hero p{color:var(--mute);font-size:15px;margin-top:6px}
+.tabs{display:flex;gap:8px;background:var(--bg2);padding:5px;border-radius:14px;margin-bottom:18px}
+.tabs button{flex:1;border:0;background:none;padding:10px;border-radius:10px;font:inherit;font-weight:600;color:var(--mute);cursor:pointer}
+.tabs button.on{background:var(--card);color:var(--henna);box-shadow:var(--shadow)}
+
+.pcard{position:relative;overflow:hidden}
+.pname{font-family:'Aref Ruqaa',serif;font-size:22px;color:var(--ink)}
+.meta-row{display:flex;gap:14px;color:var(--mute);font-size:13.5px;margin:6px 0 10px;flex-wrap:wrap}
+.traits{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.trait{background:var(--gold-soft);color:var(--henna-d);font-size:12.5px;padding:5px 11px;border-radius:999px;font-weight:600}
+.avatar{
+  width:52px;height:52px;border-radius:50% 50% 50% 6px;background:linear-gradient(135deg,var(--gold),var(--henna));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Aref Ruqaa',serif;font-size:22px;flex:0 0 auto;
+}
+
+.empty{text-align:center;padding:50px 20px;color:var(--mute)}
+.empty svg{width:56px;height:56px;stroke:var(--gold);fill:none;stroke-width:1.3;margin-bottom:14px}
+.empty h3{color:var(--ink);margin-bottom:6px;font-family:'Aref Ruqaa',serif;font-size:20px}
+
+.toast{
+  position:fixed; top:calc(14px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
+  background:var(--henna-d); color:#fff; padding:11px 18px; border-radius:12px; font-size:14px;
+  z-index:30; max-width:88vw; box-shadow:0 4px 14px rgba(0,0,0,.2);
+}
+
+.chat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.chat-top .who{display:flex;align-items:center;gap:10px}
+.lock{
+  background:var(--gold-soft); color:var(--henna-d); padding:10px 14px; border-radius:14px;
+  font-size:13px; margin:12px 0; line-height:1.6;
+}
+.msgs{display:flex;flex-direction:column;gap:9px;padding-top:6px}
+.msg{
+  max-width:78%; align-self:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:18px 18px 18px 5px; padding:9px 14px; white-space:pre-wrap; word-break:break-word;
+}
+.msg.me{align-self:flex-end;background:var(--henna);color:#fff;border-color:transparent;border-radius:18px 18px 5px 18px}
+.msg small{display:block;font-size:10.5px;opacity:.7;margin-top:3px}
+.composer{
+  position:fixed; inset:auto 0 0 0; z-index:6; background:var(--card); border-top:1px solid var(--line);
+  display:flex; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+}
+.composer input{flex:1}
+.composer .btn{width:auto;padding:12px 20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none"><path d="M16 27C9 22 4 17.5 4 12a6 6 0 0 1 11-3.3A6 6 0 0 1 26 12c0 5.5-5 10-10 15Z" stroke="#8B3A2F" stroke-width="1.8"/><path d="M16 27C9 22 4 17.5 4 12a6 6 0 0 1 11-3.3" stroke="#C9A15C" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <h1>وُد</h1>
+    </div>
+    <button class="btn ghost small" id="logout" hidden>خروج</button>
+  </div>
+</header>
+<main id="app"></main>
+<nav hidden>
+  <button data-tab="browse"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/></svg>استكشاف</button>
+  <button data-tab="requests"><svg viewBox="0 0 24 24"><path d="M4 12h11M11 6l6 6-6 6"/></svg>الطلبات</button>
+  <button data-tab="chats"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>المحادثات</button>
+  <button data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c1-4.5 4.5-6.5 7-6.5S18 16.5 19 21"/></svg>حسابي</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://drqjzhwfuzzifjxwhnit.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRycWp6aHdmdXp6aWZqeHdobml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyODE0MTMsImV4cCI6MjEwNTg1NzQxM30.4vt1jSA0P0X5vM4r-9VtdRfN0I1aFCD3pDx6dlviCqU';
+const TTL_HOURS = 24;
+const CITIES = ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الأحساء','الطائف','تبوك','أبها','خميس مشيط','بريدة','حائل','جازان','نجران','ينبع','الجبيل','الباحة','عرعر','سكاكا'];
+const GOALS = ['أبحث عن زواج قريب', 'أبحث بجدية بدون استعجال', 'أستكشف الخيارات الآن'];
+const FAMILY = ['أفضل إشراك الأهل من البداية', 'بعد التفاهم الأولي', 'حسب الطرف الآخر'];
+const EDU = ['ثانوي', 'دبلوم', 'بكالوريوس', 'دراسات عليا'];
+const KIDS = ['أتمنى أطفال', 'غير متأكد بعد', 'أفضل عدم الإنجاب'];
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = t => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2600); };
+const fail = e => { console.error(e); toast(e?.message || 'ما تم الإجراء، جرّب مرة ثانية'); };
+const initial = n => (n || '؟').trim()[0] || '؟';
+const cityOptions = (sel, all) => (all ? '<option value="">كل المدن</option>' : '') + CITIES.map(c => `<option ${c === sel ? 'selected' : ''}>${c}</option>`).join('');
+const pillGroup = (name, options, sel) => `<div class="pill-group" data-group="${name}">` +
+  options.map(o => `<button type="button" class="pill ${o === sel ? 'on' : ''}" data-val="${esc(o)}">${esc(o)}</button>`).join('') + `</div>`;
+const wireGroup = root => root.querySelectorAll('[data-group]').forEach(g =>
+  g.querySelectorAll('.pill').forEach(p => p.onclick = () => { g.querySelectorAll('.pill').forEach(x => x.classList.remove('on')); p.classList.add('on'); }));
+const groupValue = (root, name) => root.querySelector(`[data-group="${name}"] .pill.on`)?.dataset.val || null;
+
+let sb, me = null, profile = null, tab = 'browse', channel = null;
+
+async function start() {
+  if (SUPABASE_URL.includes('YOUR-PROJECT')) {
+    app.innerHTML = '<div class="card"><h2 class="display">باقي خطوة</h2><p>حط رابط مشروع Supabase والمفتاح العام في أعلى السكربت.</p></div>';
+    return;
+  }
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data: { session } } = await sb.auth.getSession();
+  me = session?.user || null;
+  sb.auth.onAuthStateChange((_e, s) => { const u = s?.user || null; if (u?.id !== me?.id) { me = u; route(); } });
+  route();
+}
+
+async function route() {
+  closeChannel();
+  $('nav').hidden = true;
+  $('#logout').hidden = !me;
+  if (!me) return authView();
+  const { data, error } = await sb.from('profiles').select('*').eq('id', me.id).maybeSingle();
+  if (error) return fail(error);
+  profile = data;
+  if (!profile) return onboardView();
+  $('nav').hidden = false;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  ({ browse: browseView, requests: requestsView, chats: chatsView, me: meView })[tab]();
+}
+
+function authView(mode = 'login') {
+  app.innerHTML = `
+    <div class="hero">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M16 27C9 22 4 17.5 4 12a6 6 0 0 1 11-3.3A6 6 0 0 1 26 12c0 5.5-5 10-10 15Z" stroke="#8B3A2F" stroke-width="1.6"/></svg>
+      <h1>وُد</h1>
+      <p>تعارف بهدف الزواج، بخصوصية واحترام</p>
+    </div>
+    <div class="tabs">
+      <button data-m="login" class="${mode === 'login' ? 'on' : ''}">دخول</button>
+      <button data-m="signup" class="${mode === 'signup' ? 'on' : ''}">حساب جديد</button>
+    </div>
+    <div class="card">
+      <label for="email">الإيميل</label><input id="email" type="email" autocomplete="email" placeholder="name@email.com">
+      <label for="pass">كلمة المرور</label><input id="pass" type="password" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" placeholder="••••••••">
+      ${mode === 'signup' ? `<label class="check" style="margin-top:16px"><input id="agree" type="checkbox"><span>أقرّ أن عمري 18 سنة أو أكثر، وأن هدفي من التسجيل هو الزواج</span></label>` : ''}
+      <button class="btn" id="go" style="margin-top:18px">${mode === 'login' ? 'دخول' : 'إنشاء الحساب'}</button>
+    </div>
+    <p class="muted" style="text-align:center">المحادثات تنحذف تلقائياً بعد ${TTL_HOURS} ساعة، وما أحد يراسلك إلا إذا وافقت على طلبه.</p>`;
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => authView(b.dataset.m));
+  const creds = () => ({ email: $('#email').value.trim(), password: $('#pass').value });
+  $('#go').onclick = async () => {
+    if (mode === 'signup') {
+      if (!$('#agree').checked) return toast('وافق على الإقرار عشان تكمل');
+      const { data, error } = await sb.auth.signUp(creds());
+      if (error) return fail(error);
+      if (!data.session) toast('أرسلنا رابط التفعيل على إيميلك');
+    } else {
+      const { error } = await sb.auth.signInWithPassword(creds());
+      if (error) return fail(error);
+    }
+  };
+}
+
+const ONB_STEPS = 5;
+let onb = { display_name:'', gender:null, birth_date:'', city:'الرياض', bio:'', goal:null, family:null, edu:null, kids:null };
+let onbStep = 1;
+
+function onboardView() {
+  onbStep = 1; onb = { display_name:'', gender:null, birth_date:'', city:'الرياض', bio:'', goal:null, family:null, edu:null, kids:null };
+  renderOnb();
+}
+
+function progressHtml() { return `<div class="progress">${Array.from({length:ONB_STEPS},(_,i)=>`<i class="${i < onbStep ? 'on' : ''}"></i>`).join('')}</div>`; }
+
+function renderOnb() {
+  if (onbStep === 1) {
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">مرحباً بك</h2>
+      <p class="muted">خلنا نتعرف عليك خطوة بخطوة</p>
+      <label for="name">الاسم اللي يظهر للناس</label><input id="name" maxlength="30" placeholder="مثال: أبو فهد أو أم سارة" value="${esc(onb.display_name)}">
+      <label>الجنس</label>
+      ${pillGroup('gender', ['رجل','امرأة'], onb.gender === 'm' ? 'رجل' : onb.gender === 'f' ? 'امرأة' : null)}
+      <div class="step-why">نستخدم اسمك وجنسك عشان نعرض ملفك للجنس الآخر فقط، وما ننشر جنسك كخانة منفصلة لأحد.</div>
+      <button class="btn" id="next" style="margin-top:18px">التالي</button>
+    </div>`;
+    wireGroup(app);
+    $('#next').onclick = () => {
+      const name = $('#name').value.trim(); const g = groupValue(app, 'gender');
+      if (name.length < 2) return toast('اكتب اسمك أولاً');
+      if (!g) return toast('اختر الجنس');
+      onb.display_name = name; onb.gender = g === 'رجل' ? 'm' : 'f';
+      onbStep = 2; renderOnb();
+    };
+  } else if (onbStep === 2) {
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">من أين أنت</h2>
+      <label for="birth">تاريخ الميلاد</label><input id="birth" type="date" value="${esc(onb.birth_date)}">
+      <label for="city">المدينة</label><select id="city">${cityOptions(onb.city)}</select>
+      <div class="step-why">يظهر عمرك للناس، وتاريخ ميلادك لا يظهر لأحد أبداً.</div>
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
+    </div>`;
+    $('#back').onclick = () => { onbStep = 1; renderOnb(); };
+    $('#next').onclick = () => {
+      const b = $('#birth').value;
+      if (!b) return toast('اختر تاريخ ميلادك');
+      const age = (Date.now() - new Date(b)) / 3.15576e10;
+      if (age < 18) return toast('التسجيل متاح لمن عمره 18 سنة أو أكثر');
+      onb.birth_date = b; onb.city = $('#city').value;
+      onbStep = 3; renderOnb();
+    };
+  } else if (onbStep === 3) {
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">هدفك من الزواج</h2>
+      <label>وش وصفك الأقرب؟</label>${pillGroup('goal', GOALS, onb.goal)}
+      <label>موقفك من إشراك الأهل</label>${pillGroup('family', FAMILY, onb.family)}
+      <div class="step-why">هذي الإجابات تساعدنا نطابقك مع ناس على نفس الموجة، وتظهر كملاحظات مختصرة بملفك.</div>
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
+    </div>`;
+    wireGroup(app);
+    $('#back').onclick = () => { onbStep = 2; renderOnb(); };
+    $('#next').onclick = () => {
+      onb.goal = groupValue(app, 'goal'); onb.family = groupValue(app, 'family');
+      onbStep = 4; renderOnb();
+    };
+  } else if (onbStep === 4) {
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">تفاصيل إضافية</h2>
+      <label>المستوى التعليمي</label>${pillGroup('edu', EDU, onb.edu)}
+      <label>الإنجاب</label>${pillGroup('kids', KIDS, onb.kids)}
+      <div class="step-why">هذي الخطوة اختيارية بالكامل، تقدر تتخطاها وتعدّلها لاحقاً من "حسابي".</div>
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
+    </div>`;
+    wireGroup(app);
+    $('#back').onclick = () => { onbStep = 3; renderOnb(); };
+    $('#next').onclick = () => {
+      onb.edu = groupValue(app, 'edu'); onb.kids = groupValue(app, 'kids');
+      onbStep = 5; renderOnb();
+    };
+  } else {
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">آخر لمسة</h2>
+      <label for="bio">اكتب نبذة عنك، وعن الشخص اللي تدور عليه</label>
+      <textarea id="bio" rows="5" maxlength="500" placeholder="مثال: أعمل في المجال الطبي، أحب القراءة، أدور على شريكة تشاركني الجدية والطموح...">${esc(onb.bio)}</textarea>
+      <div class="step-why">نبذة صادقة وواضحة تجذب تواصل أجدّ من غيرها.</div>
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="save">إنهاء وحفظ الملف</button></div>
+    </div>`;
+    $('#back').onclick = () => { onbStep = 4; renderOnb(); };
+    $('#save').onclick = async () => {
+      onb.bio = $('#bio').value.trim();
+      const traits = [onb.goal, onb.family, onb.edu, onb.kids].filter(Boolean).join(' • ');
+      const bioFull = traits ? (onb.bio ? onb.bio + '\n\n' + traits : traits) : onb.bio;
+      const row = { id: me.id, display_name: onb.display_name, gender: onb.gender, birth_date: onb.birth_date, city: onb.city, bio: bioFull };
+      const { error } = await sb.from('profiles').insert(row);
+      if (error) return fail(error.code === '23514' ? { message: 'تأكد من صحة البيانات المدخلة' } : error);
+      toast('أهلاً بك في وُد 🌿');
+      route();
+    };
+  }
+}
+
+async function nameMap(ids) {
+  if (!ids.length) return {};
+  const { data } = await sb.from('public_profiles').select('*').in('id', ids);
+  return Object.fromEntries((data || []).map(p => [p.id, p]));
+}
+function splitBio(bio) {
+  const parts = (bio || '').split('\n\n');
+  const last = parts[parts.length - 1];
+  if (last && last.includes(' • ')) return { text: parts.slice(0, -1).join('\n\n'), traits: last.split(' • ') };
+  return { text: bio || '', traits: [] };
+}
+function personCard(p, actionsHtml) {
+  const { text, traits } = splitBio(p.bio);
+  return `<div class="card pcard">
+    <div class="row" style="align-items:center;gap:12px">
+      <div class="avatar">${esc(initial(p.display_name))}</div>
+      <div><div class="pname">${esc(p.display_name)}</div>
+        <div class="meta-row"><span>${p.age} سنة</span><span>${esc(p.city)}</span></div>
+      </div>
+    </div>
+    ${text ? `<p style="margin-top:10px">${esc(text)}</p>` : ''}
+    ${traits.length ? `<div class="traits">${traits.map(t => `<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${actionsHtml || ''}
+  </div>`;
+}
+function emptyState(icon, title, sub) {
+  return `<div class="empty">${icon}<h3>${esc(title)}</h3><p>${esc(sub)}</p></div>`;
+}
+const ICONS = {
+  search: `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>`,
+  inbox: `<svg viewBox="0 0 24 24"><path d="M4 12h4l2 3h4l2-3h4"/><path d="M4 12 6 5h12l2 7"/><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg>`,
+  chat: `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+};
+
+async function browseView() {
+  app.innerHTML = `<select id="filter" aria-label="المدينة">${cityOptions(profile.city, true)}</select><div id="list" style="margin-top:14px" class="muted">جاري التحميل…</div>`;
+  const load = async () => {
+    let q = sb.from('public_profiles').select('*').order('created_at', { ascending: false }).limit(50);
+    if ($('#filter').value) q = q.eq('city', $('#filter').value);
+    const [{ data, error }, { data: sent }] = await Promise.all([q, sb.from('requests').select('receiver').eq('sender', me.id)]);
+    if (error) return fail(error);
+    const done = new Set((sent || []).map(r => r.receiver));
+    const list = $('#list');
+    list.className = '';
+    list.innerHTML = data.length ? data.map(p => personCard(p,
+        done.has(p.id)
+          ? `<p class="muted" style="margin-top:12px">أرسلت طلب تواصل، بانتظار الرد</p>`
+          : `<button class="btn gold" style="margin-top:12px;width:auto" data-req="${p.id}">إرسال طلب تواصل</button>`
+      )).join('')
+      : emptyState(ICONS.search, 'ما فيه أحد هنا بعد', 'جرّب تغيّر المدينة أو اختر "كل المدن"');
+    list.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
+      b.disabled = true;
+      const { error } = await sb.from('requests').insert({ receiver: b.dataset.req });
+      if (error) { b.disabled = false; return fail(error); }
+      b.outerHTML = '<p class="muted" style="margin-top:12px">أرسلت طلب تواصل، بانتظار الرد</p>';
+      toast('أُرسل طلب التواصل');
+    });
+  };
+  $('#filter').onchange = load;
+  load();
+}
+
+async function requestsView() {
+  app.innerHTML = '<p class="muted">جاري التحميل…</p>';
+  const { data: reqs, error } = await sb.from('requests').select('*').order('created_at', { ascending: false });
+  if (error) return fail(error);
+  const names = await nameMap([...new Set(reqs.flatMap(r => [r.sender, r.receiver]).filter(i => i !== me.id))]);
+  const inc = reqs.filter(r => r.receiver === me.id && r.status === 'pending');
+  const out = reqs.filter(r => r.sender === me.id);
+  const label = { pending: 'بانتظار الرد', accepted: 'قُبل الطلب ✓', declined: 'اعتذر الطرف الآخر' };
+
+  const incHtml = inc.length ? inc.map(r => { const p = names[r.sender]; return p ? personCard(p,
+      `<div class="row" style="margin-top:12px"><button class="btn small" data-a="${r.id}">قبول</button><button class="btn ghost small" data-d="${r.id}">اعتذار</button></div>`) : ''; }).join('')
+    : emptyState(ICONS.inbox, 'صندوقك فاضي', 'أول ما يهتم فيك أحد، بيظهر طلبه هنا');
+
+  const outHtml = out.length ? out.map(r => `<div class="card plain row between">
+      <span>${esc(names[r.receiver]?.display_name || 'مستخدم')}</span><span class="muted">${label[r.status]}</span>
+    </div>`).join('') : `<p class="muted">ما أرسلت طلب بعد. ابدأ من "استكشاف".</p>`;
+
+  app.innerHTML = `<h2 class="display" style="margin-bottom:12px">وصلك</h2>${incHtml}
+    <h2 class="display" style="margin:24px 0 12px">أرسلته</h2>${outHtml}`;
+
+  const set = async (id, status) => {
+    const { error } = await sb.from('requests').update({ status }).eq('id', id);
+    if (error) return fail(error);
+    toast(status === 'accepted' ? 'تم القبول، افتح "المحادثات"' : 'تم الاعتذار');
+    requestsView();
+  };
+  app.querySelectorAll('[data-a]').forEach(b => b.onclick = () => set(b.dataset.a, 'accepted'));
+  app.querySelectorAll('[data-d]').forEach(b => b.onclick = () => set(b.dataset.d, 'declined'));
+}
+
+async function chatsView() {
+  app.innerHTML = '<p class="muted">جاري التحميل…</p>';
+  const { data: chats, error } = await sb.from('chats').select('*').order('created_at', { ascending: false });
+  if (error) return fail(error);
+  const other = c => c.user_a === me.id ? c.user_b : c.user_a;
+  const names = await nameMap(chats.map(other));
+  app.innerHTML = (chats.length ? chats.map(c => { const p = names[other(c)]; if (!p) return ''; return `
+      <button class="card plain row between" style="width:100%;text-align:start;font:inherit;color:inherit;cursor:pointer;align-items:center" data-c="${c.id}" data-o="${other(c)}">
+        <div class="row" style="align-items:center;gap:12px"><div class="avatar">${esc(initial(p.display_name))}</div>
+          <div><strong>${esc(p.display_name)}</strong><div class="muted">${p.age} سنة · ${esc(p.city)}</div></div></div>
+      </button>`; }).join('')
+    : emptyState(ICONS.chat, 'ما عندك محادثات بعد', 'أول ما ينقبل طلب، تفتح المحادثة هنا تلقائياً'));
+  app.querySelectorAll('[data-c]').forEach(b => b.onclick = () => chatView(b.dataset.c, b.dataset.o, names[b.dataset.o]?.display_name || 'مستخدم'));
+}
+
+function leftTime(exp) {
+  const h = Math.ceil((new Date(exp) - Date.now()) / 36e5);
+  return h <= 1 ? 'تنحذف خلال ساعة' : `تنحذف بعد ${h} ساعة`;
+}
+
+async function chatView(chatId, otherId, otherName) {
+  closeChannel();
+  $('nav').hidden = true;
+  app.innerHTML = `<div class="chat-top">
+      <div class="who"><button class="btn ghost small" id="back">‹ رجوع</button><strong class="display" style="font-size:19px">${esc(otherName)}</strong></div>
+      <div class="row"><button class="btn ghost small" id="report">إبلاغ</button><button class="btn ghost small" id="block">حظر</button></div>
+    </div>
+    <div class="lock">لا ترسل صور خاصة أو معلومات حساسة. لو تعرضت لإزعاج أو ابتزاز استخدم زر "إبلاغ".</div>
+    <div class="msgs" id="msgs"></div><div style="height:80px"></div>`;
+  const composer = document.createElement('div');
+  composer.className = 'composer'; composer.id = 'composer';
+  composer.innerHTML = '<input id="txt" placeholder="اكتب رسالتك" maxlength="1000" aria-label="الرسالة"><button class="btn" id="send">إرسال</button>';
+  document.body.append(composer);
+
+  const seen = new Set();
+  const add = m => {
+    if (seen.has(m.id)) return; seen.add(m.id);
+    const d = document.createElement('div');
+    d.className = 'msg' + (m.sender === me.id ? ' me' : '');
+    d.textContent = m.body;
+    const t = document.createElement('small'); t.textContent = leftTime(m.expires_at);
+    d.append(t); $('#msgs').append(d);
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+  const { data, error } = await sb.from('messages').select('*').eq('chat_id', chatId).order('created_at');
+  if (error) return fail(error);
+  data.forEach(add);
+  channel = sb.channel('chat-' + chatId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${chatId}` }, p => add(p.new))
+    .subscribe();
+
+  const send = async () => {
+    const body = $('#txt').value.trim(); if (!body) return;
+    $('#txt').value = '';
+    const { data, error } = await sb.from('messages').insert({ chat_id: chatId, body }).select().single();
+    if (error) { $('#txt').value = body; return fail(error); }
+    add(data);
+  };
+  $('#send').onclick = send;
+  $('#txt').onkeydown = e => { if (e.key === 'Enter') send(); };
+  $('#back').onclick = () => { tab = 'chats'; route(); };
+  $('#report').onclick = async () => {
+    const reason = prompt('وش صار؟ (إزعاج، ابتزاز، احتيال، غيره)');
+    if (reason === null) return;
+    const { error } = await sb.rpc('report_chat', { p_chat: chatId, p_reason: reason });
+    if (error) return fail(error);
+    toast('وصل البلاغ، وحظرنا المستخدم عنك');
+    tab = 'chats'; route();
+  };
+  $('#block').onclick = async () => {
+    if (!confirm(`تبي تحظر ${otherName}؟ ما راح يقدر يراسلك أو يشوف ملفك.`)) return;
+    const { error } = await sb.from('blocks').insert({ blocked: otherId });
+    if (error) return fail(error);
+    toast(`حظرت ${otherName}`);
+    tab = 'chats'; route();
+  };
+}
+
+function meView() {
+  const { text, traits } = splitBio(profile.bio);
+  app.innerHTML = `<div class="card" style="text-align:center">
+      <div class="avatar" style="width:76px;height:76px;font-size:32px;margin:0 auto 12px">${esc(initial(profile.display_name))}</div>
+      <h2 class="display">${esc(profile.display_name)}</h2>
+      <p class="muted">${esc(profile.city)}</p>
+      ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+    </div>
+    <div class="card">
+      <label for="city">المدينة</label><select id="city">${cityOptions(profile.city)}</select>
+      <label for="bio">النبذة</label><textarea id="bio" rows="4" maxlength="500">${esc(text)}</textarea>
+      <button class="btn" id="save" style="margin-top:14px">حفظ التعديلات</button>
+    </div>
+    <div class="card plain"><p class="muted">حذف الحساب يمسح ملفك وطلباتك ومحادثاتك فوراً وما يمكن استرجاعه.</p><button class="btn ghost" id="del">حذف حسابي</button></div>`;
+  $('#save').onclick = async () => {
+    const newBio = traits.length ? ($('#bio').value.trim() + '\n\n' + traits.join(' • ')) : $('#bio').value.trim();
+    const { error } = await sb.from('profiles').update({ city: $('#city').value, bio: newBio }).eq('id', me.id);
+    if (error) return fail(error);
+    toast('حفظت التعديلات'); route();
+  };
+  $('#del').onclick = async () => {
+    if (!confirm('متأكد؟ الحذف نهائي.')) return;
+    const { error } = await sb.rpc('delete_my_account');
+    if (error) return fail(error);
+    toast('حذفنا حسابك');
+    await sb.auth.signOut();
+  };
+}
+
+function closeChannel() {
+  if (channel) { sb.removeChannel(channel); channel = null; }
+  document.getElementById('composer')?.remove();
+}
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => { tab = b.dataset.tab; route(); });
+$('#logout').onclick = () => sb.auth.signOut();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+start();
+</script>
+</body>
+</html>
