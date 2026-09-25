@@ -495,6 +495,23 @@ const ICONS = {
   heart: `<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/></svg>`,
 };
 
+/* ================= نسبة اكتمال الملف ونسبة التوافق ================= */
+const PROFILE_FIELDS = 10; // marital, tribal, religiosity, poly, smoking, goal, family, edu, kids, hobbies(1+)
+function completionPct(p) {
+  const t = traitsOf(p);
+  const known = new Set([...MARITAL, ...MARITAL_F, ...TRIBAL, ...RELIGIOSITY, ...POLY_M, ...POLY_F, ...SMOKING, ...GOALS, ...FAMILY, ...EDU, ...KIDS].map(x => x[0]));
+  const fixed = t.filter(x => known.has(x)).length; // out of 9 possible fixed fields
+  const hasHobby = t.some(x => !known.has(x)) ? 1 : 0;
+  return Math.min(100, Math.round(((fixed + hasHobby) / PROFILE_FIELDS) * 100));
+}
+function compatibilityPct(mine, other) {
+  const a = new Set(traitsOf(mine)), b = traitsOf(other);
+  if (!a.size || !b.length) return null;
+  const shared = b.filter(x => a.has(x)).length;
+  const base = Math.max(a.size, b.length) || 1;
+  return Math.min(97, Math.round(35 + (shared / base) * 65)); // 35% أرضية + تطابق فعلي
+}
+
 /* ================= استكشاف: بطاقات سحب ================= */
 let deckData = [], deckIdx = 0, cityFilter = '', dragState = null;
 
@@ -534,6 +551,7 @@ function renderDeck() {
   slice.forEach((p, i) => {
     const top = i === slice.length - 1;
     const traits = traitsOf(p);
+    const compat = compatibilityPct(profile, p);
     const el = document.createElement('div');
     el.className = 'deck-card';
     el.style.transform = top ? 'none' : 'scale(.96) translateY(10px)';
@@ -543,6 +561,7 @@ function renderDeck() {
       <div class="avatar">${esc(initial(p.display_name))}</div>
       <div class="pname">${esc(p.display_name)}</div>
       <div class="meta-row">${p.age} سنة · ${esc(p.city)}</div>
+      ${compat !== null ? `<div class="trait" style="margin:6px auto;display:table;background:var(--gold);color:#3A2C10">توافق ${compat}%</div>` : ''}
       <div class="bio-scroll">${traits.length ? `<div class="traits">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : `<p class="muted" style="text-align:center">ما أضاف اهتمامات بعد</p>`}</div>`;
     deck.append(el);
     if (top) wireDrag(el, p.id);
@@ -595,10 +614,14 @@ async function finishSwipe(el, dir, personId) {
 /* ================= الطلبات ================= */
 function personCard(p, actionsHtml) {
   const traits = traitsOf(p);
+  const compat = compatibilityPct(profile, p);
   return `<div class="card">
-    <div class="row" style="align-items:center;gap:12px">
-      <div class="avatar">${esc(initial(p.display_name))}</div>
-      <div><div class="pname">${esc(p.display_name)}</div><div class="meta-row">${p.age} سنة · ${esc(p.city)}</div></div>
+    <div class="row" style="align-items:center;gap:12px;justify-content:space-between">
+      <div class="row" style="align-items:center;gap:12px">
+        <div class="avatar">${esc(initial(p.display_name))}</div>
+        <div><div class="pname">${esc(p.display_name)}</div><div class="meta-row">${p.age} سنة · ${esc(p.city)}</div></div>
+      </div>
+      ${compat !== null ? `<span class="trait" style="background:var(--gold);color:#3A2C10">${compat}%</span>` : ''}
     </div>
     ${traits.length ? `<div class="traits">${traits.map(t => `<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
     ${actionsHtml || ''}
@@ -721,6 +744,7 @@ async function chatView(chatId, otherId, otherName) {
 /* ================= حسابي ================= */
 function meView() {
   const traits = traitsOf(profile);
+  const pct = completionPct(profile);
   const has = label => traits.includes(label);
   const pick = list => list.find(([label]) => has(label))?.[0] || '';
   const maritalOpts = profile.gender === 'f' ? MARITAL_F : MARITAL;
@@ -735,6 +759,11 @@ function meView() {
       <h2 class="display">${esc(profile.display_name)}</h2>
       <p class="muted">${esc(profile.city)}</p>
       ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div style="margin-top:14px">
+        <div class="row between" style="margin-bottom:6px"><span class="muted">اكتمال الملف</span><strong style="color:var(--gold)">${pct}%</strong></div>
+        <div style="height:8px;border-radius:99px;background:var(--bg2);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--gold);border-radius:99px"></div></div>
+        ${pct < 100 ? `<p class="muted" style="margin-top:8px">أكمل باقي الحقول تحت عشان يزيد ظهور ملفك وتحسّن دقة التوافق</p>` : `<p class="muted" style="margin-top:8px">ملفك مكتمل بالكامل 🌿</p>`}
+      </div>
     </div>
     <div class="card">
       <h3 class="display" style="font-size:19px;margin-bottom:8px">المكان</h3>
