@@ -31,7 +31,7 @@ body{
   font-family:'IBM Plex Sans Arabic',Tahoma,sans-serif;
   background:var(--bg); color:var(--ink);
   padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased; overscroll-behavior-y:contain;
 }
 .display{font-family:'Aref Ruqaa','Lateef',serif}
 h1,h2,h3{line-height:1.35;margin:0}
@@ -47,6 +47,7 @@ header{
 .brand h1{font-family:'Aref Ruqaa',serif;font-size:28px;color:var(--henna);font-weight:700}
 
 main{max-width:520px;margin:0 auto;padding:20px 18px calc(120px + env(safe-area-inset-bottom))}
+main.tight{padding-left:0;padding-right:0}
 
 p{margin:0 0 10px}
 .muted{color:var(--mute);font-size:14px}
@@ -62,7 +63,6 @@ input[type=text],input[type=email],input[type=password],input[type=date],select,
   background:var(--bg); color:var(--ink); font:inherit; font-size:16px;
 }
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--henna)}
-textarea{resize:vertical;line-height:1.6}
 ::placeholder{color:var(--mute);opacity:.7}
 
 .btn{
@@ -90,23 +90,34 @@ nav{
   display:flex; padding-bottom:env(safe-area-inset-bottom);
 }
 nav button{
-  flex:1; background:none; border:0; padding:12px 4px 10px; font:inherit; font-size:12.5px;
+  flex:1; background:none; border:0; padding:12px 4px 10px; font:inherit; font-size:11.5px;
   color:var(--mute); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;
 }
-nav button svg{width:22px;height:22px;stroke:var(--mute);fill:none;stroke-width:1.7}
+nav button svg{width:23px;height:23px;stroke:var(--mute);fill:none;stroke-width:1.7}
 nav button.on{color:var(--henna);font-weight:600}
 nav button.on svg{stroke:var(--henna)}
+nav button .dot{position:absolute;margin-inline-start:14px;margin-top:-2px;width:8px;height:8px;border-radius:50%;background:var(--henna)}
 
 .progress{display:flex;gap:6px;margin-bottom:22px}
 .progress i{flex:1;height:4px;border-radius:3px;background:var(--line)}
 .progress i.on{background:var(--henna)}
 .step-why{background:var(--gold-soft);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--ink);margin-top:14px;line-height:1.6}
+
 .pill-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .pill{
-  border:1.5px solid var(--line); border-radius:999px; padding:9px 16px; font:inherit; font-size:14px;
-  background:var(--bg); color:var(--ink); cursor:pointer;
+  border:1.5px solid var(--line); border-radius:999px; padding:11px 18px; font:inherit; font-size:14.5px;
+  background:var(--bg); color:var(--ink); cursor:pointer; display:flex; align-items:center; gap:6px;
 }
 .pill.on{background:var(--henna);border-color:var(--henna);color:#fff}
+.pill .ic{font-size:16px}
+
+.tile-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.tile{
+  border:1.5px solid var(--line); border-radius:16px; padding:16px 10px; text-align:center;
+  background:var(--bg); color:var(--ink); cursor:pointer; font:inherit; font-size:14px;
+}
+.tile .ic{font-size:26px;display:block;margin-bottom:6px}
+.tile.on{background:var(--gold-soft);border-color:var(--gold);color:var(--henna-d);font-weight:600}
 
 .hero{padding:26px 4px 10px;text-align:center}
 .hero .mark{width:64px;height:64px;margin:0 auto 14px}
@@ -116,7 +127,6 @@ nav button.on svg{stroke:var(--henna)}
 .tabs button{flex:1;border:0;background:none;padding:10px;border-radius:10px;font:inherit;font-weight:600;color:var(--mute);cursor:pointer}
 .tabs button.on{background:var(--card);color:var(--henna);box-shadow:var(--shadow)}
 
-.pcard{position:relative;overflow:hidden}
 .pname{font-family:'Aref Ruqaa',serif;font-size:22px;color:var(--ink)}
 .meta-row{display:flex;gap:14px;color:var(--mute);font-size:13.5px;margin:6px 0 10px;flex-wrap:wrap}
 .traits{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
@@ -136,13 +146,13 @@ nav button.on svg{stroke:var(--henna)}
   z-index:30; max-width:88vw; box-shadow:0 4px 14px rgba(0,0,0,.2);
 }
 
-.chat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.chat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;padding:0 18px}
 .chat-top .who{display:flex;align-items:center;gap:10px}
 .lock{
   background:var(--gold-soft); color:var(--henna-d); padding:10px 14px; border-radius:14px;
-  font-size:13px; margin:12px 0; line-height:1.6;
+  font-size:13px; margin:12px 18px; line-height:1.6;
 }
-.msgs{display:flex;flex-direction:column;gap:9px;padding-top:6px}
+.msgs{display:flex;flex-direction:column;gap:9px;padding:6px 18px 0}
 .msg{
   max-width:78%; align-self:flex-start; background:var(--card); border:1px solid var(--line);
   border-radius:18px 18px 18px 5px; padding:9px 14px; white-space:pre-wrap; word-break:break-word;
@@ -155,6 +165,41 @@ nav button.on svg{stroke:var(--henna)}
 }
 .composer input{flex:1}
 .composer .btn{width:auto;padding:12px 20px}
+.quick-replies{display:flex;gap:8px;overflow-x:auto;padding:8px 18px 0}
+.quick-replies button{
+  flex:0 0 auto; border:1.5px solid var(--line); background:var(--card); color:var(--henna-d);
+  padding:8px 14px; border-radius:999px; font:inherit; font-size:13px; white-space:nowrap;
+}
+
+/* ===== Swipe deck ===== */
+.deck{position:relative;height:calc(100vh - 220px);min-height:420px;max-width:480px;margin:0 auto}
+.deck-card{
+  position:absolute; inset:0; background:var(--card); border:1px solid var(--line);
+  border-radius:28px; box-shadow:0 8px 28px rgba(43,33,24,.14); padding:26px 22px;
+  display:flex; flex-direction:column; touch-action:pan-y; user-select:none;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s ease;
+}
+.deck-card .avatar{width:84px;height:84px;font-size:36px;margin:0 auto 14px}
+.deck-card .pname{text-align:center;font-size:26px}
+.deck-card .meta-row{justify-content:center}
+.deck-card .bio-scroll{flex:1;overflow-y:auto;margin-top:6px}
+.deck-card .traits{justify-content:center}
+.stamp{
+  position:absolute; top:28px; font-family:'Aref Ruqaa',serif; font-size:34px; font-weight:700;
+  border:4px solid; border-radius:14px; padding:2px 14px; opacity:0; transform:rotate(-14deg);
+}
+.stamp.like{color:var(--ok);border-color:var(--ok);inset-inline-end:20px}
+.stamp.pass{color:var(--err);border-color:var(--err);inset-inline-start:20px;transform:rotate(14deg)}
+.deck-actions{display:flex;justify-content:center;gap:22px;margin-top:16px}
+.circle-btn{
+  width:60px;height:60px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);
+  box-shadow:var(--shadow); display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.circle-btn.pass{color:var(--err)}
+.circle-btn.like{color:var(--ok);width:68px;height:68px}
+.circle-btn svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2}
+.filter-bar{display:flex;gap:8px;overflow-x:auto;padding:0 18px 14px}
+.filter-bar .pill{padding:8px 15px;font-size:13.5px;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -170,7 +215,7 @@ nav button.on svg{stroke:var(--henna)}
 <main id="app"></main>
 <nav hidden>
   <button data-tab="browse"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/></svg>استكشاف</button>
-  <button data-tab="requests"><svg viewBox="0 0 24 24"><path d="M4 12h11M11 6l6 6-6 6"/></svg>الطلبات</button>
+  <button data-tab="requests" style="position:relative"><svg viewBox="0 0 24 24"><path d="M4 12h11M11 6l6 6-6 6"/></svg>الطلبات<span class="dot" id="reqDot" hidden></span></button>
   <button data-tab="chats"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>المحادثات</button>
   <button data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c1-4.5 4.5-6.5 7-6.5S18 16.5 19 21"/></svg>حسابي</button>
 </nav>
@@ -180,11 +225,15 @@ nav button.on svg{stroke:var(--henna)}
 const SUPABASE_URL = 'https://drqjzhwfuzzifjxwhnit.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRycWp6aHdmdXp6aWZqeHdobml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyODE0MTMsImV4cCI6MjEwNTg1NzQxM30.4vt1jSA0P0X5vM4r-9VtdRfN0I1aFCD3pDx6dlviCqU';
 const TTL_HOURS = 24;
+
 const CITIES = ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الأحساء','الطائف','تبوك','أبها','خميس مشيط','بريدة','حائل','جازان','نجران','ينبع','الجبيل','الباحة','عرعر','سكاكا'];
-const GOALS = ['أبحث عن زواج قريب', 'أبحث بجدية بدون استعجال', 'أستكشف الخيارات الآن'];
-const FAMILY = ['أفضل إشراك الأهل من البداية', 'بعد التفاهم الأولي', 'حسب الطرف الآخر'];
-const EDU = ['ثانوي', 'دبلوم', 'بكالوريوس', 'دراسات عليا'];
-const KIDS = ['أتمنى أطفال', 'غير متأكد بعد', 'أفضل عدم الإنجاب'];
+const GOALS  = [['أبحث عن زواج قريب','⏳'], ['أبحث بجدية بدون استعجال','🧭'], ['أستكشف الخيارات الآن','🌱']];
+const FAMILY = [['أفضل إشراك الأهل من البداية','👪'], ['بعد التفاهم الأولي','🤝'], ['حسب الطرف الآخر','💬']];
+const EDU    = [['ثانوي','📘'], ['دبلوم','📗'], ['بكالوريوس','🎓'], ['دراسات عليا','📚']];
+const KIDS   = [['أتمنى أطفال','👶'], ['غير متأكد بعد','🤔'], ['أفضل عدم الإنجاب','🙅']];
+const HOBBIES = [['القراءة','📖'],['الرياضة','⚽'],['السفر','✈️'],['الطبخ','🍳'],['التقنية','💻'],['الفن والرسم','🎨'],['الطبيعة والتخييم','⛺'],['الألعاب','🎮'],['الموسيقى','🎵'],['الطهي والقهوة','☕']];
+const AGE_BANDS = ['20-25','26-30','31-35','36-40','41-45','+46'];
+const QUICK_REPLIES = ['أعجبني ملفك 🌿','نتشارك نفس الاهتمامات','حاب نتعرف أكثر بإذن الله'];
 
 const $ = s => document.querySelector(s);
 const app = $('#app');
@@ -192,12 +241,29 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const toast = t => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2600); };
 const fail = e => { console.error(e); toast(e?.message || 'ما تم الإجراء، جرّب مرة ثانية'); };
 const initial = n => (n || '؟').trim()[0] || '؟';
-const cityOptions = (sel, all) => (all ? '<option value="">كل المدن</option>' : '') + CITIES.map(c => `<option ${c === sel ? 'selected' : ''}>${c}</option>`).join('');
-const pillGroup = (name, options, sel) => `<div class="pill-group" data-group="${name}">` +
-  options.map(o => `<button type="button" class="pill ${o === sel ? 'on' : ''}" data-val="${esc(o)}">${esc(o)}</button>`).join('') + `</div>`;
-const wireGroup = root => root.querySelectorAll('[data-group]').forEach(g =>
-  g.querySelectorAll('.pill').forEach(p => p.onclick = () => { g.querySelectorAll('.pill').forEach(x => x.classList.remove('on')); p.classList.add('on'); }));
-const groupValue = (root, name) => root.querySelector(`[data-group="${name}"] .pill.on`)?.dataset.val || null;
+
+function pillGroup(name, options, selArr, multi) {
+  selArr = selArr || [];
+  return `<div class="pill-group" data-group="${name}" data-multi="${multi ? '1' : ''}">` +
+    options.map(([label, ic]) => `<button type="button" class="pill ${selArr.includes(label) ? 'on' : ''}" data-val="${esc(label)}"><span class="ic">${ic}</span>${esc(label)}</button>`).join('') + `</div>`;
+}
+function tileGroup(name, options, selArr) {
+  selArr = selArr || [];
+  return `<div class="tile-group" data-group="${name}" data-multi="1">` +
+    options.map(([label, ic]) => `<button type="button" class="tile ${selArr.includes(label) ? 'on' : ''}" data-val="${esc(label)}"><span class="ic">${ic}</span>${esc(label)}</button>`).join('') + `</div>`;
+}
+function wireGroups(root) {
+  root.querySelectorAll('[data-group]').forEach(g => {
+    const multi = g.dataset.multi === '1';
+    g.querySelectorAll('.pill,.tile').forEach(p => p.onclick = () => {
+      if (multi) p.classList.toggle('on');
+      else { g.querySelectorAll('.pill,.tile').forEach(x => x.classList.remove('on')); p.classList.add('on'); }
+    });
+  });
+}
+function groupValue(root, name) { return root.querySelector(`[data-group="${name}"] .on`)?.dataset.val || null; }
+function groupValues(root, name) { return [...root.querySelectorAll(`[data-group="${name}"] .on`)].map(x => x.dataset.val); }
+function cityOptions(sel, all) { return (all ? '<option value="">كل المدن</option>' : '') + CITIES.map(c => `<option ${c === sel ? 'selected' : ''}>${c}</option>`).join(''); }
 
 let sb, me = null, profile = null, tab = 'browse', channel = null;
 
@@ -215,6 +281,8 @@ async function start() {
 
 async function route() {
   closeChannel();
+  document.body.classList.remove('deck-mode');
+  $('main').className = '';
   $('nav').hidden = true;
   $('#logout').hidden = !me;
   if (!me) return authView();
@@ -224,9 +292,16 @@ async function route() {
   if (!profile) return onboardView();
   $('nav').hidden = false;
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  updateReqDot();
   ({ browse: browseView, requests: requestsView, chats: chatsView, me: meView })[tab]();
 }
 
+async function updateReqDot() {
+  const { count } = await sb.from('requests').select('*', { count: 'exact', head: true }).eq('receiver', me.id).eq('status', 'pending');
+  $('#reqDot').hidden = !count;
+}
+
+/* ================= المصادقة ================= */
 function authView(mode = 'login') {
   app.innerHTML = `
     <div class="hero">
@@ -260,29 +335,26 @@ function authView(mode = 'login') {
   };
 }
 
-const ONB_STEPS = 5;
-let onb = { display_name:'', gender:null, birth_date:'', city:'الرياض', bio:'', goal:null, family:null, edu:null, kids:null };
-let onbStep = 1;
+/* ================= التسجيل التدريجي (بدون كتابة إلا الاسم) ================= */
+const ONB_STEPS = 6;
+let onb, onbStep = 1;
+function resetOnb() { onb = { display_name:'', gender:null, birth_date_year:null, city:'الرياض', goal:null, family:null, edu:null, kids:null, hobbies:[] }; }
 
-function onboardView() {
-  onbStep = 1; onb = { display_name:'', gender:null, birth_date:'', city:'الرياض', bio:'', goal:null, family:null, edu:null, kids:null };
-  renderOnb();
-}
-
+function onboardView() { resetOnb(); onbStep = 1; renderOnb(); }
 function progressHtml() { return `<div class="progress">${Array.from({length:ONB_STEPS},(_,i)=>`<i class="${i < onbStep ? 'on' : ''}"></i>`).join('')}</div>`; }
+const YEARS = (() => { const y = new Date().getFullYear() - 1400 + 621; const arr = []; for (let a = 18; a <= 60; a++) arr.push(new Date().getFullYear() - a); return arr; })();
 
 function renderOnb() {
   if (onbStep === 1) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">مرحباً بك</h2>
-      <p class="muted">خلنا نتعرف عليك خطوة بخطوة</p>
-      <label for="name">الاسم اللي يظهر للناس</label><input id="name" maxlength="30" placeholder="مثال: أبو فهد أو أم سارة" value="${esc(onb.display_name)}">
-      <label>الجنس</label>
-      ${pillGroup('gender', ['رجل','امرأة'], onb.gender === 'm' ? 'رجل' : onb.gender === 'f' ? 'امرأة' : null)}
-      <div class="step-why">نستخدم اسمك وجنسك عشان نعرض ملفك للجنس الآخر فقط، وما ننشر جنسك كخانة منفصلة لأحد.</div>
+      <p class="muted">هذي الخطوة الوحيدة اللي تحتاج فيها تكتب</p>
+      <label for="name">اسمك اللي يظهر للناس</label><input id="name" maxlength="30" placeholder="مثال: أبو فهد أو أم سارة" value="${esc(onb.display_name)}">
+      <label>الجنس</label>${pillGroup('gender', [['رجل','👤'],['امرأة','👤']], onb.gender === 'm' ? ['رجل'] : onb.gender === 'f' ? ['امرأة'] : [])}
+      <div class="step-why">نستخدم اسمك وجنسك عشان نعرض ملفك للجنس الآخر فقط.</div>
       <button class="btn" id="next" style="margin-top:18px">التالي</button>
     </div>`;
-    wireGroup(app);
+    wireGroups(app);
     $('#next').onclick = () => {
       const name = $('#name').value.trim(); const g = groupValue(app, 'gender');
       if (name.length < 2) return toast('اكتب اسمك أولاً');
@@ -292,30 +364,30 @@ function renderOnb() {
     };
   } else if (onbStep === 2) {
     app.innerHTML = `${progressHtml()}<div class="card">
-      <h2 class="display">من أين أنت</h2>
-      <label for="birth">تاريخ الميلاد</label><input id="birth" type="date" value="${esc(onb.birth_date)}">
-      <label for="city">المدينة</label><select id="city">${cityOptions(onb.city)}</select>
-      <div class="step-why">يظهر عمرك للناس، وتاريخ ميلادك لا يظهر لأحد أبداً.</div>
+      <h2 class="display">عمرك ومدينتك</h2>
+      <label>فئة عمرك</label>${pillGroup('age', AGE_BANDS.map(a=>[a,'🎂']), onb.age ? [onb.age] : [])}
+      <label>المدينة</label>${pillGroup('city', CITIES.slice(0,8).map(c=>[c,'📍']), [onb.city])}
+      <div class="step-why">يظهر عمرك التقريبي ومدينتك للجميع، بدون تاريخ ميلاد دقيق.</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
+    wireGroups(app);
     $('#back').onclick = () => { onbStep = 1; renderOnb(); };
     $('#next').onclick = () => {
-      const b = $('#birth').value;
-      if (!b) return toast('اختر تاريخ ميلادك');
-      const age = (Date.now() - new Date(b)) / 3.15576e10;
-      if (age < 18) return toast('التسجيل متاح لمن عمره 18 سنة أو أكثر');
-      onb.birth_date = b; onb.city = $('#city').value;
+      const age = groupValue(app, 'age'); const city = groupValue(app, 'city');
+      if (!age) return toast('اختر فئة عمرك');
+      if (!city) return toast('اختر مدينتك');
+      onb.age = age; onb.city = city;
       onbStep = 3; renderOnb();
     };
   } else if (onbStep === 3) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">هدفك من الزواج</h2>
-      <label>وش وصفك الأقرب؟</label>${pillGroup('goal', GOALS, onb.goal)}
-      <label>موقفك من إشراك الأهل</label>${pillGroup('family', FAMILY, onb.family)}
-      <div class="step-why">هذي الإجابات تساعدنا نطابقك مع ناس على نفس الموجة، وتظهر كملاحظات مختصرة بملفك.</div>
+      <label>وش وصفك الأقرب؟</label>${pillGroup('goal', GOALS, onb.goal ? [onb.goal] : [])}
+      <label>موقفك من إشراك الأهل</label>${pillGroup('family', FAMILY, onb.family ? [onb.family] : [])}
+      <div class="step-why">هذي الإجابات تساعدنا نطابقك مع ناس على نفس الموجة.</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
-    wireGroup(app);
+    wireGroups(app);
     $('#back').onclick = () => { onbStep = 2; renderOnb(); };
     $('#next').onclick = () => {
       onb.goal = groupValue(app, 'goal'); onb.family = groupValue(app, 'family');
@@ -324,99 +396,185 @@ function renderOnb() {
   } else if (onbStep === 4) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">تفاصيل إضافية</h2>
-      <label>المستوى التعليمي</label>${pillGroup('edu', EDU, onb.edu)}
-      <label>الإنجاب</label>${pillGroup('kids', KIDS, onb.kids)}
-      <div class="step-why">هذي الخطوة اختيارية بالكامل، تقدر تتخطاها وتعدّلها لاحقاً من "حسابي".</div>
+      <label>المستوى التعليمي</label>${pillGroup('edu', EDU, onb.edu ? [onb.edu] : [])}
+      <label>الإنجاب</label>${pillGroup('kids', KIDS, onb.kids ? [onb.kids] : [])}
+      <div class="step-why">اختياري بالكامل، تقدر تعدّلها لاحقاً من "حسابي".</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
-    wireGroup(app);
+    wireGroups(app);
     $('#back').onclick = () => { onbStep = 3; renderOnb(); };
     $('#next').onclick = () => {
       onb.edu = groupValue(app, 'edu'); onb.kids = groupValue(app, 'kids');
       onbStep = 5; renderOnb();
     };
-  } else {
+  } else if (onbStep === 5) {
     app.innerHTML = `${progressHtml()}<div class="card">
-      <h2 class="display">آخر لمسة</h2>
-      <label for="bio">اكتب نبذة عنك، وعن الشخص اللي تدور عليه</label>
-      <textarea id="bio" rows="5" maxlength="500" placeholder="مثال: أعمل في المجال الطبي، أحب القراءة، أدور على شريكة تشاركني الجدية والطموح...">${esc(onb.bio)}</textarea>
-      <div class="step-why">نبذة صادقة وواضحة تجذب تواصل أجدّ من غيرها.</div>
+      <h2 class="display">اهتماماتك</h2>
+      <p class="muted">اختر كم شي يمثلك (تقدر تختار أكثر من واحد)</p>
+      ${tileGroup('hobbies', HOBBIES, onb.hobbies)}
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
+    </div>`;
+    wireGroups(app);
+    $('#back').onclick = () => { onbStep = 4; renderOnb(); };
+    $('#next').onclick = () => {
+      onb.hobbies = groupValues(app, 'hobbies');
+      onbStep = 6; renderOnb();
+    };
+  } else {
+    const traits = [onb.goal, onb.family, onb.edu, onb.kids].filter(Boolean);
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">راجع ملفك</h2>
+      <div style="text-align:center;margin:10px 0">
+        <div class="avatar" style="width:76px;height:76px;font-size:32px;margin:0 auto 10px">${esc(initial(onb.display_name))}</div>
+        <div class="pname">${esc(onb.display_name)}</div>
+        <div class="meta-row" style="justify-content:center">${esc(onb.age)} سنة · ${esc(onb.city)}</div>
+      </div>
+      ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+      ${onb.hobbies.length ? `<div class="traits" style="justify-content:center">${onb.hobbies.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="step-why">هذا وش بيشوفه الناس عنك. تقدر تعدّله بعدين من "حسابي".</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="save">إنهاء وحفظ الملف</button></div>
     </div>`;
-    $('#back').onclick = () => { onbStep = 4; renderOnb(); };
+    $('#back').onclick = () => { onbStep = 5; renderOnb(); };
     $('#save').onclick = async () => {
-      onb.bio = $('#bio').value.trim();
-      const traits = [onb.goal, onb.family, onb.edu, onb.kids].filter(Boolean).join(' • ');
-      const bioFull = traits ? (onb.bio ? onb.bio + '\n\n' + traits : traits) : onb.bio;
-      const row = { id: me.id, display_name: onb.display_name, gender: onb.gender, birth_date: onb.birth_date, city: onb.city, bio: bioFull };
+      const bio = [...traits, ...onb.hobbies].join(' • ');
+      const midYear = { '20-25':22,'26-30':28,'31-35':33,'36-40':38,'41-45':43,'+46':50 }[onb.age] || 25;
+      const birth_date = `${new Date().getFullYear() - midYear}-06-15`;
+      const row = { id: me.id, display_name: onb.display_name, gender: onb.gender, birth_date, city: onb.city, bio };
       const { error } = await sb.from('profiles').insert(row);
-      if (error) return fail(error.code === '23514' ? { message: 'تأكد من صحة البيانات المدخلة' } : error);
+      if (error) return fail(error.code === '23514' ? { message: 'تأكد من صحة البيانات' } : error);
       toast('أهلاً بك في وُد 🌿');
       route();
     };
   }
 }
 
+/* ================= بيانات مساعدة ================= */
 async function nameMap(ids) {
   if (!ids.length) return {};
   const { data } = await sb.from('public_profiles').select('*').in('id', ids);
   return Object.fromEntries((data || []).map(p => [p.id, p]));
 }
-function splitBio(bio) {
-  const parts = (bio || '').split('\n\n');
-  const last = parts[parts.length - 1];
-  if (last && last.includes(' • ')) return { text: parts.slice(0, -1).join('\n\n'), traits: last.split(' • ') };
-  return { text: bio || '', traits: [] };
-}
-function personCard(p, actionsHtml) {
-  const { text, traits } = splitBio(p.bio);
-  return `<div class="card pcard">
-    <div class="row" style="align-items:center;gap:12px">
-      <div class="avatar">${esc(initial(p.display_name))}</div>
-      <div><div class="pname">${esc(p.display_name)}</div>
-        <div class="meta-row"><span>${p.age} سنة</span><span>${esc(p.city)}</span></div>
-      </div>
-    </div>
-    ${text ? `<p style="margin-top:10px">${esc(text)}</p>` : ''}
-    ${traits.length ? `<div class="traits">${traits.map(t => `<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
-    ${actionsHtml || ''}
-  </div>`;
-}
-function emptyState(icon, title, sub) {
-  return `<div class="empty">${icon}<h3>${esc(title)}</h3><p>${esc(sub)}</p></div>`;
-}
+function traitsOf(p) { return (p.bio || '').split(' • ').filter(Boolean); }
+function emptyState(icon, title, sub) { return `<div class="empty">${icon}<h3>${esc(title)}</h3><p>${esc(sub)}</p></div>`; }
 const ICONS = {
   search: `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>`,
   inbox: `<svg viewBox="0 0 24 24"><path d="M4 12h4l2 3h4l2-3h4"/><path d="M4 12 6 5h12l2 7"/><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg>`,
   chat: `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  x: `<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>`,
+  heart: `<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/></svg>`,
 };
 
+/* ================= استكشاف: بطاقات سحب ================= */
+let deckData = [], deckIdx = 0, cityFilter = '', dragState = null;
+
 async function browseView() {
-  app.innerHTML = `<select id="filter" aria-label="المدينة">${cityOptions(profile.city, true)}</select><div id="list" style="margin-top:14px" class="muted">جاري التحميل…</div>`;
-  const load = async () => {
-    let q = sb.from('public_profiles').select('*').order('created_at', { ascending: false }).limit(50);
-    if ($('#filter').value) q = q.eq('city', $('#filter').value);
-    const [{ data, error }, { data: sent }] = await Promise.all([q, sb.from('requests').select('receiver').eq('sender', me.id)]);
-    if (error) return fail(error);
-    const done = new Set((sent || []).map(r => r.receiver));
-    const list = $('#list');
-    list.className = '';
-    list.innerHTML = data.length ? data.map(p => personCard(p,
-        done.has(p.id)
-          ? `<p class="muted" style="margin-top:12px">أرسلت طلب تواصل، بانتظار الرد</p>`
-          : `<button class="btn gold" style="margin-top:12px;width:auto" data-req="${p.id}">إرسال طلب تواصل</button>`
-      )).join('')
-      : emptyState(ICONS.search, 'ما فيه أحد هنا بعد', 'جرّب تغيّر المدينة أو اختر "كل المدن"');
-    list.querySelectorAll('[data-req]').forEach(b => b.onclick = async () => {
-      b.disabled = true;
-      const { error } = await sb.from('requests').insert({ receiver: b.dataset.req });
-      if (error) { b.disabled = false; return fail(error); }
-      b.outerHTML = '<p class="muted" style="margin-top:12px">أرسلت طلب تواصل، بانتظار الرد</p>';
-      toast('أُرسل طلب التواصل');
-    });
+  $('main').className = 'tight';
+  app.innerHTML = `<div class="filter-bar" id="fbar">
+      <button class="pill ${!cityFilter?'on':''}" data-c="">كل المدن</button>
+      ${CITIES.slice(0,8).map(c=>`<button class="pill ${cityFilter===c?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('')}
+    </div>
+    <div class="deck" id="deck"></div>
+    <div class="deck-actions">
+      <button class="circle-btn pass" id="passBtn" aria-label="تجاوز">${ICONS.x}</button>
+      <button class="circle-btn like" id="likeBtn" aria-label="طلب تواصل">${ICONS.heart}</button>
+    </div>`;
+  $('#fbar').querySelectorAll('.pill').forEach(b => b.onclick = () => { cityFilter = b.dataset.c; loadDeck(); });
+  $('#passBtn').onclick = () => animateSwipe(-1);
+  $('#likeBtn').onclick = () => animateSwipe(1);
+  await loadDeck();
+}
+
+async function loadDeck() {
+  let q = sb.from('public_profiles').select('*').order('created_at', { ascending: false }).limit(50);
+  if (cityFilter) q = q.eq('city', cityFilter);
+  const [{ data, error }, { data: sent }] = await Promise.all([q, sb.from('requests').select('receiver').eq('sender', me.id)]);
+  if (error) return fail(error);
+  const done = new Set((sent || []).map(r => r.receiver));
+  deckData = (data || []).filter(p => !done.has(p.id));
+  deckIdx = 0;
+  renderDeck();
+}
+
+function renderDeck() {
+  const deck = $('#deck'); if (!deck) return;
+  deck.innerHTML = '';
+  const slice = deckData.slice(deckIdx, deckIdx + 2).reverse();
+  if (!deckData.length || deckIdx >= deckData.length) {
+    deck.innerHTML = `<div class="deck-card" style="position:static;display:flex;align-items:center;justify-content:center">${emptyState(ICONS.search, 'خلصت الملفات بهالمدينة', 'جرّب مدينة ثانية أو ارجع بعد شوي')}</div>`;
+    return;
+  }
+  slice.forEach((p, i) => {
+    const top = i === slice.length - 1;
+    const traits = traitsOf(p);
+    const el = document.createElement('div');
+    el.className = 'deck-card';
+    el.style.transform = top ? 'none' : 'scale(.96) translateY(10px)';
+    el.style.zIndex = i;
+    el.innerHTML = `
+      <div class="stamp like">مرحباً</div><div class="stamp pass">تجاوز</div>
+      <div class="avatar">${esc(initial(p.display_name))}</div>
+      <div class="pname">${esc(p.display_name)}</div>
+      <div class="meta-row">${p.age} سنة · ${esc(p.city)}</div>
+      <div class="bio-scroll">${traits.length ? `<div class="traits">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : `<p class="muted" style="text-align:center">ما أضاف اهتمامات بعد</p>`}</div>`;
+    deck.append(el);
+    if (top) wireDrag(el, p.id);
+  });
+}
+
+function wireDrag(el, personId) {
+  let startX = 0, dx = 0, dragging = false;
+  const like = el.querySelector('.stamp.like'), pass = el.querySelector('.stamp.pass');
+  const onDown = e => { dragging = true; startX = (e.touches ? e.touches[0].clientX : e.clientX); el.style.transition = 'none'; };
+  const onMove = e => {
+    if (!dragging) return;
+    const x = (e.touches ? e.touches[0].clientX : e.clientX);
+    dx = x - startX;
+    el.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+    like.style.opacity = Math.max(0, dx / 80);
+    pass.style.opacity = Math.max(0, -dx / 80);
   };
-  $('#filter').onchange = load;
-  load();
+  const onUp = () => {
+    if (!dragging) return; dragging = false;
+    el.style.transition = '';
+    if (Math.abs(dx) > 90) finishSwipe(el, dx > 0 ? 1 : -1, personId);
+    else { el.style.transform = 'none'; like.style.opacity = 0; pass.style.opacity = 0; }
+    dx = 0;
+  };
+  el.addEventListener('mousedown', onDown); el.addEventListener('touchstart', onDown, { passive: true });
+  window.addEventListener('mousemove', onMove); el.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('mouseup', onUp); el.addEventListener('touchend', onUp);
+  el._cleanup = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+}
+
+function animateSwipe(dir) {
+  const el = $('#deck .deck-card:last-child');
+  if (!el || !deckData[deckIdx]) return;
+  finishSwipe(el, dir, deckData[deckIdx].id);
+}
+
+async function finishSwipe(el, dir, personId) {
+  el.style.transform = `translateX(${dir * 500}px) rotate(${dir * 20}deg)`;
+  el.style.opacity = '0';
+  if (el._cleanup) el._cleanup();
+  if (dir > 0) {
+    const { error } = await sb.from('requests').insert({ receiver: personId });
+    if (!error) toast('أُرسل طلب التواصل');
+  }
+  deckIdx++;
+  setTimeout(renderDeck, 260);
+}
+
+/* ================= الطلبات ================= */
+function personCard(p, actionsHtml) {
+  const traits = traitsOf(p);
+  return `<div class="card">
+    <div class="row" style="align-items:center;gap:12px">
+      <div class="avatar">${esc(initial(p.display_name))}</div>
+      <div><div class="pname">${esc(p.display_name)}</div><div class="meta-row">${p.age} سنة · ${esc(p.city)}</div></div>
+    </div>
+    ${traits.length ? `<div class="traits">${traits.map(t => `<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${actionsHtml || ''}
+  </div>`;
 }
 
 async function requestsView() {
@@ -449,6 +607,7 @@ async function requestsView() {
   app.querySelectorAll('[data-d]').forEach(b => b.onclick = () => set(b.dataset.d, 'declined'));
 }
 
+/* ================= المحادثات ================= */
 async function chatsView() {
   app.innerHTML = '<p class="muted">جاري التحميل…</p>';
   const { data: chats, error } = await sb.from('chats').select('*').order('created_at', { ascending: false });
@@ -472,16 +631,20 @@ function leftTime(exp) {
 async function chatView(chatId, otherId, otherName) {
   closeChannel();
   $('nav').hidden = true;
+  $('main').className = 'tight';
   app.innerHTML = `<div class="chat-top">
       <div class="who"><button class="btn ghost small" id="back">‹ رجوع</button><strong class="display" style="font-size:19px">${esc(otherName)}</strong></div>
       <div class="row"><button class="btn ghost small" id="report">إبلاغ</button><button class="btn ghost small" id="block">حظر</button></div>
     </div>
     <div class="lock">لا ترسل صور خاصة أو معلومات حساسة. لو تعرضت لإزعاج أو ابتزاز استخدم زر "إبلاغ".</div>
-    <div class="msgs" id="msgs"></div><div style="height:80px"></div>`;
+    <div class="msgs" id="msgs"></div>
+    <div class="quick-replies" id="qr">${QUICK_REPLIES.map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+    <div style="height:80px"></div>`;
   const composer = document.createElement('div');
   composer.className = 'composer'; composer.id = 'composer';
   composer.innerHTML = '<input id="txt" placeholder="اكتب رسالتك" maxlength="1000" aria-label="الرسالة"><button class="btn" id="send">إرسال</button>';
   document.body.append(composer);
+  $('#qr').querySelectorAll('button').forEach(b => b.onclick = () => { $('#txt').value = b.dataset.q; send(); });
 
   const seen = new Set();
   const add = m => {
@@ -500,13 +663,13 @@ async function chatView(chatId, otherId, otherName) {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${chatId}` }, p => add(p.new))
     .subscribe();
 
-  const send = async () => {
+  async function send() {
     const body = $('#txt').value.trim(); if (!body) return;
     $('#txt').value = '';
     const { data, error } = await sb.from('messages').insert({ chat_id: chatId, body }).select().single();
     if (error) { $('#txt').value = body; return fail(error); }
     add(data);
-  };
+  }
   $('#send').onclick = send;
   $('#txt').onkeydown = e => { if (e.key === 'Enter') send(); };
   $('#back').onclick = () => { tab = 'chats'; route(); };
@@ -527,8 +690,9 @@ async function chatView(chatId, otherId, otherName) {
   };
 }
 
+/* ================= حسابي ================= */
 function meView() {
-  const { text, traits } = splitBio(profile.bio);
+  const traits = traitsOf(profile);
   app.innerHTML = `<div class="card" style="text-align:center">
       <div class="avatar" style="width:76px;height:76px;font-size:32px;margin:0 auto 12px">${esc(initial(profile.display_name))}</div>
       <h2 class="display">${esc(profile.display_name)}</h2>
@@ -536,14 +700,14 @@ function meView() {
       ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="card">
-      <label for="city">المدينة</label><select id="city">${cityOptions(profile.city)}</select>
-      <label for="bio">النبذة</label><textarea id="bio" rows="4" maxlength="500">${esc(text)}</textarea>
-      <button class="btn" id="save" style="margin-top:14px">حفظ التعديلات</button>
+      <label>المدينة</label>${pillGroup('city', CITIES.slice(0,8).map(c=>[c,'📍']), [profile.city])}
+      <button class="btn" id="save" style="margin-top:16px">حفظ التعديلات</button>
     </div>
     <div class="card plain"><p class="muted">حذف الحساب يمسح ملفك وطلباتك ومحادثاتك فوراً وما يمكن استرجاعه.</p><button class="btn ghost" id="del">حذف حسابي</button></div>`;
+  wireGroups(app);
   $('#save').onclick = async () => {
-    const newBio = traits.length ? ($('#bio').value.trim() + '\n\n' + traits.join(' • ')) : $('#bio').value.trim();
-    const { error } = await sb.from('profiles').update({ city: $('#city').value, bio: newBio }).eq('id', me.id);
+    const city = groupValue(app, 'city') || profile.city;
+    const { error } = await sb.from('profiles').update({ city }).eq('id', me.id);
     if (error) return fail(error);
     toast('حفظت التعديلات'); route();
   };
