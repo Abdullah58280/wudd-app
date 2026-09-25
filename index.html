@@ -264,6 +264,9 @@ function wireGroups(root) {
 function groupValue(root, name) { return root.querySelector(`[data-group="${name}"] .on`)?.dataset.val || null; }
 function groupValues(root, name) { return [...root.querySelectorAll(`[data-group="${name}"] .on`)].map(x => x.dataset.val); }
 function cityOptions(sel, all) { return (all ? '<option value="">كل المدن</option>' : '') + CITIES.map(c => `<option ${c === sel ? 'selected' : ''}>${c}</option>`).join(''); }
+function selectFor(id, options, sel, placeholder) {
+  return `<select id="${id}"><option value="">${esc(placeholder)}</option>${options.map(([label, ic]) => `<option value="${esc(label)}" ${label === sel ? 'selected' : ''}>${ic} ${esc(label)}</option>`).join('')}</select>`;
+}
 
 let sb, me = null, profile = null, tab = 'browse', channel = null;
 
@@ -365,15 +368,15 @@ function renderOnb() {
   } else if (onbStep === 2) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">عمرك ومدينتك</h2>
-      <label>فئة عمرك</label>${pillGroup('age', AGE_BANDS.map(a=>[a,'🎂']), onb.age ? [onb.age] : [])}
-      <label>المدينة</label>${pillGroup('city', CITIES.slice(0,8).map(c=>[c,'📍']), [onb.city])}
+      <label for="ageSel">فئة عمرك</label><select id="ageSel"><option value="">اختر الفئة</option>${AGE_BANDS.map(a=>`<option ${onb.age===a?'selected':''}>${a}</option>`).join('')}</select>
+      <label for="citySel">المدينة</label><select id="citySel">${cityOptions(onb.city)}</select>
       <div class="step-why">يظهر عمرك التقريبي ومدينتك للجميع، بدون تاريخ ميلاد دقيق.</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
     $('#back').onclick = () => { onbStep = 1; renderOnb(); };
     $('#next').onclick = () => {
-      const age = groupValue(app, 'age'); const city = groupValue(app, 'city');
+      const age = $('#ageSel').value; const city = $('#citySel').value;
       if (!age) return toast('اختر فئة عمرك');
       if (!city) return toast('اختر مدينتك');
       onb.age = age; onb.city = city;
@@ -382,29 +385,29 @@ function renderOnb() {
   } else if (onbStep === 3) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">هدفك من الزواج</h2>
-      <label>وش وصفك الأقرب؟</label>${pillGroup('goal', GOALS, onb.goal ? [onb.goal] : [])}
-      <label>موقفك من إشراك الأهل</label>${pillGroup('family', FAMILY, onb.family ? [onb.family] : [])}
+      <label for="goalSel">وش وصفك الأقرب؟</label>${selectFor('goalSel', GOALS, onb.goal, 'اختر وصفك')}
+      <label for="familySel">موقفك من إشراك الأهل</label>${selectFor('familySel', FAMILY, onb.family, 'اختر موقفك')}
       <div class="step-why">هذي الإجابات تساعدنا نطابقك مع ناس على نفس الموجة.</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
     $('#back').onclick = () => { onbStep = 2; renderOnb(); };
     $('#next').onclick = () => {
-      onb.goal = groupValue(app, 'goal'); onb.family = groupValue(app, 'family');
+      onb.goal = $('#goalSel').value || null; onb.family = $('#familySel').value || null;
       onbStep = 4; renderOnb();
     };
   } else if (onbStep === 4) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">تفاصيل إضافية</h2>
-      <label>المستوى التعليمي</label>${pillGroup('edu', EDU, onb.edu ? [onb.edu] : [])}
-      <label>الإنجاب</label>${pillGroup('kids', KIDS, onb.kids ? [onb.kids] : [])}
+      <label for="eduSel">المستوى التعليمي</label>${selectFor('eduSel', EDU, onb.edu, 'اختر المستوى')}
+      <label for="kidsSel">الإنجاب</label>${selectFor('kidsSel', KIDS, onb.kids, 'اختر رأيك')}
       <div class="step-why">اختياري بالكامل، تقدر تعدّلها لاحقاً من "حسابي".</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
     $('#back').onclick = () => { onbStep = 3; renderOnb(); };
     $('#next').onclick = () => {
-      onb.edu = groupValue(app, 'edu'); onb.kids = groupValue(app, 'kids');
+      onb.edu = $('#eduSel').value || null; onb.kids = $('#kidsSel').value || null;
       onbStep = 5; renderOnb();
     };
   } else if (onbStep === 5) {
@@ -469,16 +472,13 @@ let deckData = [], deckIdx = 0, cityFilter = '', dragState = null;
 
 async function browseView() {
   $('main').className = 'tight';
-  app.innerHTML = `<div class="filter-bar" id="fbar">
-      <button class="pill ${!cityFilter?'on':''}" data-c="">كل المدن</button>
-      ${CITIES.slice(0,8).map(c=>`<button class="pill ${cityFilter===c?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('')}
-    </div>
+  app.innerHTML = `<div style="padding:0 18px 14px"><select id="fbar">${cityOptions(cityFilter, true)}</select></div>
     <div class="deck" id="deck"></div>
     <div class="deck-actions">
       <button class="circle-btn pass" id="passBtn" aria-label="تجاوز">${ICONS.x}</button>
       <button class="circle-btn like" id="likeBtn" aria-label="طلب تواصل">${ICONS.heart}</button>
     </div>`;
-  $('#fbar').querySelectorAll('.pill').forEach(b => b.onclick = () => { cityFilter = b.dataset.c; loadDeck(); });
+  $('#fbar').onchange = () => { cityFilter = $('#fbar').value; loadDeck(); };
   $('#passBtn').onclick = () => animateSwipe(-1);
   $('#likeBtn').onclick = () => animateSwipe(1);
   await loadDeck();
@@ -700,13 +700,12 @@ function meView() {
       ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="card">
-      <label>المدينة</label>${pillGroup('city', CITIES.slice(0,8).map(c=>[c,'📍']), [profile.city])}
+      <label for="citySel">المدينة</label><select id="citySel">${cityOptions(profile.city)}</select>
       <button class="btn" id="save" style="margin-top:16px">حفظ التعديلات</button>
     </div>
     <div class="card plain"><p class="muted">حذف الحساب يمسح ملفك وطلباتك ومحادثاتك فوراً وما يمكن استرجاعه.</p><button class="btn ghost" id="del">حذف حسابي</button></div>`;
-  wireGroups(app);
   $('#save').onclick = async () => {
-    const city = groupValue(app, 'city') || profile.city;
+    const city = $('#citySel').value || profile.city;
     const { error } = await sb.from('profiles').update({ city }).eq('id', me.id);
     if (error) return fail(error);
     toast('حفظت التعديلات'); route();
