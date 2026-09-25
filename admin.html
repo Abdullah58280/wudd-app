@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لوحة تحكم وُد</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1C1410; --bg2:#241A14; --card:#2A1F18; --ink:#F3E9DC; --mute:#B7A491;
+  --henna:#D8785F; --henna-d:#C4634C; --gold:#D9B679; --gold-soft:#3A2C1E;
+  --line:#3D2D22; --ok:#7FB08E; --err:#D9776A;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:'IBM Plex Sans Arabic',Tahoma,sans-serif;background:var(--bg);color:var(--ink);padding:18px;padding-bottom:60px}
+.display{font-family:'Aref Ruqaa',serif}
+h1{font-family:'Aref Ruqaa',serif;color:var(--henna);font-size:26px;margin:0 0 4px}
+h2{font-size:17px;margin:0 0 12px;color:var(--ink)}
+.muted{color:var(--mute);font-size:13.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat b{display:block;font-size:26px;color:var(--gold);font-family:'Aref Ruqaa',serif}
+.stat span{font-size:12.5px;color:var(--mute)}
+.tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.tabs button{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--mute);padding:9px 16px;border-radius:11px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--henna);color:#fff;border-color:var(--henna)}
+input,select{width:100%;padding:11px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:10px}
+.btn{background:var(--henna);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;border:1.5px solid var(--err);color:var(--err)}
+.btn.small{padding:7px 12px;font-size:13px}
+.row{display:flex;gap:8px}
+.report{border-inline-start:4px solid var(--err);padding:10px 12px;border-radius:0 12px 12px 0;background:var(--gold-soft);margin-bottom:10px}
+.report.resolved{border-inline-start-color:var(--ok);opacity:.6}
+.msgline{font-size:13px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.msgline b{color:var(--henna)}
+.pill{display:inline-block;background:var(--gold-soft);color:var(--gold);font-size:11.5px;padding:3px 9px;border-radius:999px;margin-inline-start:6px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--henna);color:#fff;padding:10px 18px;border-radius:10px;z-index:30}
+</style>
+</head>
+<body>
+<div id="app"><p class="muted">جاري التحقق...</p></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://drqjzhwfuzzifjxwhnit.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRycWp6aHdmdXp6aWZqeHdobml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyODE0MTMsImV4cCI6MjEwNTg1NzQxM30.4vt1jSA0P0X5vM4r-9VtdRfN0I1aFCD3pDx6dlviCqU';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = t => { const d = document.createElement('div'); d.className='toast'; d.textContent=t; document.body.append(d); setTimeout(()=>d.remove(),2600); };
+let tab = 'stats';
+
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return loginView();
+  const { data: isAdmin, error } = await sb.rpc('am_i_admin');
+  if (error) return app.innerHTML = `<p>خطأ: ${esc(error.message)}</p>`;
+  if (!isAdmin) {
+    app.innerHTML = `<div class="card"><h1>غير مصرح</h1><p class="muted">هذا الحساب ما عنده صلاحية دخول لوحة التحكم.</p>
+      <button class="btn ghost" id="out" style="margin-top:10px">تسجيل خروج</button></div>`;
+    $('#out').onclick = () => sb.auth.signOut().then(boot);
+    return;
+  }
+  shell();
+}
+
+function loginView() {
+  app.innerHTML = `<div class="card">
+    <h1>لوحة تحكم وُد</h1>
+    <p class="muted">دخول المدير فقط</p>
+    <input id="email" type="email" placeholder="الإيميل" autocomplete="email">
+    <input id="pass" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+    <button class="btn" id="go">دخول</button>
+  </div>`;
+  $('#go').onclick = async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: $('#email').value.trim(), password: $('#pass').value });
+    if (error) return toast(error.message);
+    boot();
+  };
+}
+
+function shell() {
+  app.innerHTML = `<h1>لوحة تحكم وُد</h1><p class="muted" style="margin-bottom:16px">مرحباً بك، هذي إحصائيات ومهام الإدارة</p>
+    <div class="tabs">
+      <button data-t="stats" class="on">نظرة عامة</button>
+      <button data-t="reports">البلاغات</button>
+      <button data-t="users">المستخدمون</button>
+    </div>
+    <div id="content"></div>
+    <button class="btn ghost small" id="out" style="margin-top:16px">تسجيل خروج</button>`;
+  $('#out').onclick = () => sb.auth.signOut().then(boot);
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); tab = b.dataset.t;
+    render();
+  });
+  render();
+}
+
+async function render() {
+  const c = $('#content');
+  c.innerHTML = '<p class="muted">جاري التحميل...</p>';
+  if (tab === 'stats') return statsView(c);
+  if (tab === 'reports') return reportsView(c);
+  if (tab === 'users') return usersView(c);
+}
+
+async function statsView(c) {
+  const { data, error } = await sb.rpc('admin_stats');
+  if (error) return c.innerHTML = `<p>خطأ: ${esc(error.message)}</p>`;
+  c.innerHTML = `<div class="stats">
+    <div class="stat"><b>${data.total_users}</b><span>إجمالي المستخدمين</span></div>
+    <div class="stat"><b>${data.new_today}</b><span>جدد آخر 24 ساعة</span></div>
+    <div class="stat"><b>${data.male_users}</b><span>رجال</span></div>
+    <div class="stat"><b>${data.female_users}</b><span>نساء</span></div>
+    <div class="stat"><b>${data.total_requests}</b><span>طلبات مُرسلة</span></div>
+    <div class="stat"><b>${data.accepted_requests}</b><span>طلبات مقبولة</span></div>
+    <div class="stat"><b style="color:${data.open_reports > 0 ? 'var(--err)' : 'var(--gold)'}">${data.open_reports}</b><span>بلاغات مفتوحة</span></div>
+    <div class="stat"><b>${data.total_reports}</b><span>إجمالي البلاغات</span></div>
+  </div>`;
+}
+
+async function reportsView(c) {
+  const { data, error } = await sb.rpc('admin_list_reports');
+  if (error) return c.innerHTML = `<p>خطأ: ${esc(error.message)}</p>`;
+  if (!data.length) return c.innerHTML = '<div class="card"><p class="muted">ما فيه بلاغات لين الحين 🌿</p></div>';
+  c.innerHTML = data.map(r => `<div class="report ${r.resolved ? 'resolved' : ''}">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <strong>${esc(r.reporter_name || 'مستخدم محذوف')} أبلغ عن ${esc(r.reported_name || 'مستخدم محذوف')}</strong>
+        <span class="pill">${new Date(r.created_at).toLocaleDateString('ar-SA')}</span>
+      </div>
+      <p class="muted" style="margin:6px 0">السبب: ${esc(r.reason || 'بدون سبب مكتوب')}</p>
+      <details><summary class="muted" style="cursor:pointer">عرض نسخة المحادثة (${(r.snapshot||[]).length} رسالة)</summary>
+        <div style="margin-top:8px">${(r.snapshot||[]).map(m => `<div class="msgline"><b>${m.sender===r.reported_id?esc(r.reported_name||'؟'):'الطرف الآخر'}:</b> ${esc(m.body)}</div>`).join('') || '<p class="muted">لا رسائل</p>'}</div>
+      </details>
+      <div class="row" style="margin-top:10px">
+        ${r.resolved ? '' : `<button class="btn small" data-resolve="${r.id}">تحديد كمحلول</button>`}
+        <button class="btn ghost small" data-ban="${r.reported_id}">حظر المُبلَّغ عنه</button>
+      </div>
+    </div>`).join('');
+  c.querySelectorAll('[data-resolve]').forEach(b => b.onclick = async () => {
+    const { error } = await sb.rpc('admin_resolve_report', { p_report_id: Number(b.dataset.resolve) });
+    if (error) return toast(error.message);
+    toast('تم تحديد البلاغ كمحلول'); reportsView(c);
+  });
+  c.querySelectorAll('[data-ban]').forEach(b => b.onclick = async () => {
+    if (!confirm('حظر هذا المستخدم يحذف حسابه نهائياً. متأكد؟')) return;
+    const { error } = await sb.rpc('admin_ban_user', { p_user_id: b.dataset.ban });
+    if (error) return toast(error.message);
+    toast('تم حظر المستخدم'); reportsView(c);
+  });
+}
+
+async function usersView(c) {
+  c.innerHTML = `<input id="q" placeholder="ابحث بالاسم..."><div id="results"><p class="muted">اكتب اسم للبحث</p></div>`;
+  let t;
+  $('#q').oninput = () => { clearTimeout(t); t = setTimeout(search, 350); };
+  async function search() {
+    const q = $('#q').value.trim();
+    if (!q) return $('#results').innerHTML = '<p class="muted">اكتب اسم للبحث</p>';
+    const { data, error } = await sb.rpc('admin_search_users', { p_query: q });
+    if (error) return $('#results').innerHTML = `<p>خطأ: ${esc(error.message)}</p>`;
+    $('#results').innerHTML = data.length ? data.map(u => `<div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div><strong>${esc(u.display_name)}</strong><div class="muted">${u.gender==='m'?'رجل':'امرأة'} · ${esc(u.city)} · ${new Date(u.created_at).toLocaleDateString('ar-SA')}</div></div>
+          <button class="btn ghost small" data-ban="${u.id}">حظر</button>
+        </div></div>`).join('') : '<p class="muted">ما فيه نتائج</p>';
+    $('#results').querySelectorAll('[data-ban]').forEach(b => b.onclick = async () => {
+      if (!confirm('حظر هذا المستخدم يحذف حسابه نهائياً. متأكد؟')) return;
+      const { error } = await sb.rpc('admin_ban_user', { p_user_id: b.dataset.ban });
+      if (error) return toast(error.message);
+      toast('تم حظر المستخدم'); search();
+    });
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
