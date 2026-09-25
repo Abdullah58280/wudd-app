@@ -1,0 +1,18 @@
+{
+  "name": "وُد",
+  "short_name": "وُد",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FBF6F0",
+  "theme_color": "#8B3A2F",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
