@@ -231,6 +231,13 @@ const GOALS  = [['أبحث عن زواج قريب','⏳'], ['أبحث بجدية
 const FAMILY = [['أفضل إشراك الأهل من البداية','👪'], ['بعد التفاهم الأولي','🤝'], ['حسب الطرف الآخر','💬']];
 const EDU    = [['ثانوي','📘'], ['دبلوم','📗'], ['بكالوريوس','🎓'], ['دراسات عليا','📚']];
 const KIDS   = [['أتمنى أطفال','👶'], ['غير متأكد بعد','🤔'], ['أفضل عدم الإنجاب','🙅']];
+const MARITAL = [['أعزب','🧑'], ['مطلق','↩️']];
+const MARITAL_F = [['عزباء','👩'], ['مطلقة','↩️'], ['أرملة','🕊️']];
+const TRIBAL = [['قبلي','🌿'], ['غير قبلي','🏙️'], ['لا يهم بالنسبة لي','🤝']];
+const RELIGIOSITY = [['ملتزم/ة بشكل كبير','🕌'], ['ملتزم/ة بشكل عام','🌙'], ['عادي','🙂']];
+const POLY_M = [['نعم مستعد للتعدد','✔️'], ['لا، ما أفكر فيه حالياً','✖️'], ['حسب الظروف','💬']];
+const POLY_F = [['موافقة إذا صار زوجي متزوج','✔️'], ['لا أفضل ذلك','✖️'], ['حسب الظروف','💬']];
+const SMOKING = [['لا أدخن','🚭'], ['أدخن','🚬']];
 const HOBBIES = [['القراءة','📖'],['الرياضة','⚽'],['السفر','✈️'],['الطبخ','🍳'],['التقنية','💻'],['الفن والرسم','🎨'],['الطبيعة والتخييم','⛺'],['الألعاب','🎮'],['الموسيقى','🎵'],['الطهي والقهوة','☕']];
 const AGE_BANDS = ['20-25','26-30','31-35','36-40','41-45','+46'];
 const QUICK_REPLIES = ['أعجبني ملفك 🌿','نتشارك نفس الاهتمامات','حاب نتعرف أكثر بإذن الله'];
@@ -339,9 +346,9 @@ function authView(mode = 'login') {
 }
 
 /* ================= التسجيل التدريجي (بدون كتابة إلا الاسم) ================= */
-const ONB_STEPS = 6;
+const ONB_STEPS = 7;
 let onb, onbStep = 1;
-function resetOnb() { onb = { display_name:'', gender:null, birth_date_year:null, city:'الرياض', goal:null, family:null, edu:null, kids:null, hobbies:[] }; }
+function resetOnb() { onb = { display_name:'', gender:null, birth_date_year:null, city:'الرياض', marital:null, tribal:null, religiosity:null, poly:null, smoking:null, goal:null, family:null, edu:null, kids:null, hobbies:[] }; }
 
 function onboardView() { resetOnb(); onbStep = 1; renderOnb(); }
 function progressHtml() { return `<div class="progress">${Array.from({length:ONB_STEPS},(_,i)=>`<i class="${i < onbStep ? 'on' : ''}"></i>`).join('')}</div>`; }
@@ -383,6 +390,27 @@ function renderOnb() {
       onbStep = 3; renderOnb();
     };
   } else if (onbStep === 3) {
+    const maritalOpts = onb.gender === 'f' ? MARITAL_F : MARITAL;
+    const polyOpts = onb.gender === 'f' ? POLY_F : POLY_M;
+    app.innerHTML = `${progressHtml()}<div class="card">
+      <h2 class="display">معلومات أساسية</h2>
+      <p class="muted">هذي الأسئلة تختصر عليك وعلى الطرف الآخر وقت كثير</p>
+      <label for="maritalSel">الحالة الاجتماعية</label>${selectFor('maritalSel', maritalOpts, onb.marital, 'اختر حالتك')}
+      <label for="tribalSel">الانتماء القبلي</label>${selectFor('tribalSel', TRIBAL, onb.tribal, 'اختر')}
+      <label for="religSel">مستوى الالتزام الديني</label>${selectFor('religSel', RELIGIOSITY, onb.religiosity, 'اختر')}
+      <label for="polySel">${onb.gender === 'f' ? 'موقفك من تعدد الزوجات' : 'موقفك من التعدد'}</label>${selectFor('polySel', polyOpts, onb.poly, 'اختر')}
+      <label for="smokeSel">التدخين</label>${selectFor('smokeSel', SMOKING, onb.smoking, 'اختر')}
+      <div class="step-why">هذي المعلومات تظهر بملفك للجميع بشفافية، عشان يتواصل معك من يناسب ظروفك فعلاً.</div>
+      <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
+    </div>`;
+    $('#back').onclick = () => { onbStep = 2; renderOnb(); };
+    $('#next').onclick = () => {
+      const marital = $('#maritalSel').value, tribal = $('#tribalSel').value, relig = $('#religSel').value, poly = $('#polySel').value, smoke = $('#smokeSel').value;
+      if (!marital || !tribal || !relig || !poly || !smoke) return toast('أكمل كل الأسئلة قبل ما تكمل');
+      onb.marital = marital; onb.tribal = tribal; onb.religiosity = relig; onb.poly = poly; onb.smoking = smoke;
+      onbStep = 4; renderOnb();
+    };
+  } else if (onbStep === 4) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">هدفك من الزواج</h2>
       <label for="goalSel">وش وصفك الأقرب؟</label>${selectFor('goalSel', GOALS, onb.goal, 'اختر وصفك')}
@@ -391,12 +419,12 @@ function renderOnb() {
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
-    $('#back').onclick = () => { onbStep = 2; renderOnb(); };
+    $('#back').onclick = () => { onbStep = 3; renderOnb(); };
     $('#next').onclick = () => {
       onb.goal = $('#goalSel').value || null; onb.family = $('#familySel').value || null;
-      onbStep = 4; renderOnb();
+      onbStep = 5; renderOnb();
     };
-  } else if (onbStep === 4) {
+  } else if (onbStep === 5) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">تفاصيل إضافية</h2>
       <label for="eduSel">المستوى التعليمي</label>${selectFor('eduSel', EDU, onb.edu, 'اختر المستوى')}
@@ -405,12 +433,12 @@ function renderOnb() {
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
-    $('#back').onclick = () => { onbStep = 3; renderOnb(); };
+    $('#back').onclick = () => { onbStep = 4; renderOnb(); };
     $('#next').onclick = () => {
       onb.edu = $('#eduSel').value || null; onb.kids = $('#kidsSel').value || null;
-      onbStep = 5; renderOnb();
+      onbStep = 6; renderOnb();
     };
-  } else if (onbStep === 5) {
+  } else if (onbStep === 6) {
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">اهتماماتك</h2>
       <p class="muted">اختر كم شي يمثلك (تقدر تختار أكثر من واحد)</p>
@@ -418,13 +446,13 @@ function renderOnb() {
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="next">التالي</button></div>
     </div>`;
     wireGroups(app);
-    $('#back').onclick = () => { onbStep = 4; renderOnb(); };
+    $('#back').onclick = () => { onbStep = 5; renderOnb(); };
     $('#next').onclick = () => {
       onb.hobbies = groupValues(app, 'hobbies');
-      onbStep = 6; renderOnb();
+      onbStep = 7; renderOnb();
     };
   } else {
-    const traits = [onb.goal, onb.family, onb.edu, onb.kids].filter(Boolean);
+    const traits = [onb.marital, onb.tribal, onb.religiosity, onb.poly, onb.smoking, onb.goal, onb.family, onb.edu, onb.kids].filter(Boolean);
     app.innerHTML = `${progressHtml()}<div class="card">
       <h2 class="display">راجع ملفك</h2>
       <div style="text-align:center;margin:10px 0">
@@ -437,7 +465,7 @@ function renderOnb() {
       <div class="step-why">هذا وش بيشوفه الناس عنك. تقدر تعدّله بعدين من "حسابي".</div>
       <div class="row" style="margin-top:18px"><button class="btn ghost" id="back">رجوع</button><button class="btn" id="save">إنهاء وحفظ الملف</button></div>
     </div>`;
-    $('#back').onclick = () => { onbStep = 5; renderOnb(); };
+    $('#back').onclick = () => { onbStep = 6; renderOnb(); };
     $('#save').onclick = async () => {
       const bio = [...traits, ...onb.hobbies].join(' • ');
       const midYear = { '20-25':22,'26-30':28,'31-35':33,'36-40':38,'41-45':43,'+46':50 }[onb.age] || 25;
