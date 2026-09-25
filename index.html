@@ -721,6 +721,15 @@ async function chatView(chatId, otherId, otherName) {
 /* ================= حسابي ================= */
 function meView() {
   const traits = traitsOf(profile);
+  const has = label => traits.includes(label);
+  const pick = list => list.find(([label]) => has(label))?.[0] || '';
+  const maritalOpts = profile.gender === 'f' ? MARITAL_F : MARITAL;
+  const polyOpts = profile.gender === 'f' ? POLY_F : POLY_M;
+  const curHobbies = HOBBIES.filter(([label]) => has(label)).map(([label]) => label);
+  const curMarital = pick(maritalOpts), curTribal = pick(TRIBAL), curRelig = pick(RELIGIOSITY),
+        curPoly = pick(polyOpts), curSmoke = pick(SMOKING), curGoal = pick(GOALS), curFamily = pick(FAMILY),
+        curEdu = pick(EDU), curKids = pick(KIDS);
+
   app.innerHTML = `<div class="card" style="text-align:center">
       <div class="avatar" style="width:76px;height:76px;font-size:32px;margin:0 auto 12px">${esc(initial(profile.display_name))}</div>
       <h2 class="display">${esc(profile.display_name)}</h2>
@@ -728,15 +737,43 @@ function meView() {
       ${traits.length ? `<div class="traits" style="justify-content:center">${traits.map(t=>`<span class="trait">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="card">
+      <h3 class="display" style="font-size:19px;margin-bottom:8px">المكان</h3>
       <label for="citySel">المدينة</label><select id="citySel">${cityOptions(profile.city)}</select>
-      <button class="btn" id="save" style="margin-top:16px">حفظ التعديلات</button>
     </div>
+    <div class="card">
+      <h3 class="display" style="font-size:19px;margin-bottom:8px">معلومات أساسية</h3>
+      <label for="maritalSel">الحالة الاجتماعية</label>${selectFor('maritalSel', maritalOpts, curMarital, 'اختر حالتك')}
+      <label for="tribalSel">الانتماء القبلي</label>${selectFor('tribalSel', TRIBAL, curTribal, 'اختر')}
+      <label for="religSel">مستوى الالتزام الديني</label>${selectFor('religSel', RELIGIOSITY, curRelig, 'اختر')}
+      <label for="polySel">${profile.gender === 'f' ? 'موقفك من تعدد الزوجات' : 'موقفك من التعدد'}</label>${selectFor('polySel', polyOpts, curPoly, 'اختر')}
+      <label for="smokeSel">التدخين</label>${selectFor('smokeSel', SMOKING, curSmoke, 'اختر')}
+    </div>
+    <div class="card">
+      <h3 class="display" style="font-size:19px;margin-bottom:8px">هدفك من الزواج</h3>
+      <label for="goalSel">وش وصفك الأقرب؟</label>${selectFor('goalSel', GOALS, curGoal, 'اختر وصفك')}
+      <label for="familySel">موقفك من إشراك الأهل</label>${selectFor('familySel', FAMILY, curFamily, 'اختر موقفك')}
+    </div>
+    <div class="card">
+      <h3 class="display" style="font-size:19px;margin-bottom:8px">تفاصيل إضافية</h3>
+      <label for="eduSel">المستوى التعليمي</label>${selectFor('eduSel', EDU, curEdu, 'اختر المستوى')}
+      <label for="kidsSel">الإنجاب</label>${selectFor('kidsSel', KIDS, curKids, 'اختر رأيك')}
+    </div>
+    <div class="card">
+      <h3 class="display" style="font-size:19px;margin-bottom:8px">اهتماماتك</h3>
+      ${tileGroup('hobbies', HOBBIES, curHobbies)}
+    </div>
+    <button class="btn" id="save" style="margin:4px 0 14px">حفظ كل التعديلات</button>
     <div class="card plain"><p class="muted">حذف الحساب يمسح ملفك وطلباتك ومحادثاتك فوراً وما يمكن استرجاعه.</p><button class="btn ghost" id="del">حذف حسابي</button></div>`;
+  wireGroups(app);
   $('#save').onclick = async () => {
     const city = $('#citySel').value || profile.city;
-    const { error } = await sb.from('profiles').update({ city }).eq('id', me.id);
+    const newTraits = [$('#maritalSel').value, $('#tribalSel').value, $('#religSel').value, $('#polySel').value, $('#smokeSel').value,
+                        $('#goalSel').value, $('#familySel').value, $('#eduSel').value, $('#kidsSel').value].filter(Boolean);
+    const newHobbies = groupValues(app, 'hobbies');
+    const bio = [...newTraits, ...newHobbies].join(' • ');
+    const { error } = await sb.from('profiles').update({ city, bio }).eq('id', me.id);
     if (error) return fail(error);
-    toast('حفظت التعديلات'); route();
+    toast('حفظت كل التعديلات'); route();
   };
   $('#del').onclick = async () => {
     if (!confirm('متأكد؟ الحذف نهائي.')) return;
